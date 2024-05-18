@@ -6,23 +6,21 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-//TODO: Change the name of the class from AnimationShell to the name of your class
 public class GlowAnimation extends JPanel {
-
-    //TODO: set the initial width and height of your image
     private static final int WIDTH = 1920;
     private static final int HEIGHT = 1080;
 
-    //required global variables
+    // required global variables
     private BufferedImage image;
     private Graphics g;
     private Timer timer;
-    private GameObject obj; //TODO: change this to whatever object(s) you are animating
+
+    private GameObject obj;
     private String string;
-    private ArrayList<GameObject> objects = new ArrayList<GameObject>();
+    private ArrayList<GameObject> objects;
     private Cube cube;
-    private int mouseX = 0;
-    private int mouseY = 0;
+    private int mouseX;
+    private int mouseY;
     private boolean mouseDown;
     private Mouse mouse;
 
@@ -32,6 +30,9 @@ public class GlowAnimation extends JPanel {
         image =  new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g = image.getGraphics();
 
+        objects = new ArrayList<GameObject>();
+        mouseX = 0;
+        mouseY = 0;
 
         cube = new Cube(0, 0, 0.0, 50, new Color(5, 252, 248), WIDTH, HEIGHT);
 
@@ -52,10 +53,6 @@ public class GlowAnimation extends JPanel {
     private class TimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            /* TODO: Move the objects that need to be animated
-             * 		 Draw your ENTIRE scene
-             * 		 Don't forget to call repaint!
-             */
             background(g);
 
             //update positions of objects
@@ -63,7 +60,6 @@ public class GlowAnimation extends JPanel {
                 objects.get(i).setX(objects.get(i).getX());
             }
 
-//            getMousePos();
             cube.drawCube(mouseX, mouseY, mouseDown, g);
 
             for (GameObject object : objects) {
@@ -153,7 +149,7 @@ public class GlowAnimation extends JPanel {
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocation(-8, 0);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setContentPane(new GlowAnimation()); //TODO: Change this to the name of your class!
+        frame.setContentPane(new GlowAnimation());
         frame.setVisible(true);
     }
 
