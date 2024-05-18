@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -19,12 +20,15 @@ public class GlowAnimation extends JPanel {
     private Timer timer;
     private GameObject obj; //TODO: change this to whatever object(s) you are animating
     private String string;
+    private ArrayList<GameObject> objects = new ArrayList<GameObject>();
 
     //Constructor required by BufferedImage
     public GlowAnimation() {
         //set up Buffered Image and Graphics objects
         image =  new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g = image.getGraphics();
+
+
 
         //set up and start the Timer
         timer = new Timer(10, new TimerListener());
@@ -42,9 +46,14 @@ public class GlowAnimation extends JPanel {
              */
             background(g);
 
-            g.setColor(Color.cyan);
-            g.fillRect(200, 200, 10, 10);
+            for (int i = 0; i < objects.size(); i++) {
+                objects.get(i).setX(objects.get(i).getX());
+            }
 
+            g.setColor(Color.cyan);
+
+            g.fillRect(200, 200, 10, 10);
+            
             repaint(); //leave this alone, it MUST  be the last thing in this method
         }
 
@@ -57,10 +66,12 @@ public class GlowAnimation extends JPanel {
             g.fillOval((int) (o.getX() - (o.getWidth() / 2) - (radius / 2)), (int) (o.getY() - (o.getHeight() / 2) - (radius / 2)), (int) o.getWidth() + radius, (int) o.getHeight() + (radius / 2));
         }
     }
+
+
     public static void background(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
 
-        g2D.setPaint (Color.black);
+        g2D.setPaint (new Color(0, 0, 0, 38));
         g2D.fillRect(0, 0, 1600, 1000);
     }
 
