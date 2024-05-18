@@ -41,7 +41,7 @@ public class Cube extends GameObject {
 
         // (int)(getX() - getWidth()/2), (int)(getY() - getHeight()/2), (int)getWidth(), (int)getHeight()
 //        Rectangle rect = new Rectangle((int)(WIDTH/2 + getX()), (int)(HEIGHT/2 + getY()), (int)getWidth(), (int)getWidth());
-        g.fillRect((int)(WIDTH/2), (int)(HEIGHT/2), (int)getWidth(), (int)getWidth());
+        g.fillRect((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
 
 //        g2d.translate(centerX + getX(), centerY + getY());
 //        g2d.rotate(Math.atan2(mouseY, mouseX));
