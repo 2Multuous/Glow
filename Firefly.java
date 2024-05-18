@@ -11,6 +11,16 @@ public class Firefly extends GameObject {
 		setBrightness(brightness);
 		setColor(color);
 	}
+
+	public Firefly(double x, double y, double width, double height) {
+		setX(x);
+		setY(y);
+		setWidth(width)
+		setHeight(height);
+		// these can be changed in the future, only temporary rn
+		brightness = 3;
+		color = Color.YELLOW;
+	}
 	
 	public void draw(double cubeX, double cubeY, Graphics g) {
 		g.setColor(getColor());
