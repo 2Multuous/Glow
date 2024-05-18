@@ -1,6 +1,5 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 //joey sucks
@@ -21,6 +20,11 @@ public class GlowAnimation extends JPanel {
     private GameObject obj; //TODO: change this to whatever object(s) you are animating
     private String string;
     private ArrayList<GameObject> objects = new ArrayList<GameObject>();
+    private Cube cube;
+    private int mouseX = 0;
+    private int mouseY = 0;
+    private boolean mouseDown;
+    private Mouse mouse;
 
     //Constructor required by BufferedImage
     public GlowAnimation() {
@@ -29,11 +33,19 @@ public class GlowAnimation extends JPanel {
         g = image.getGraphics();
 
 
+        cube = new Cube(0, 0, 0.0, 50, new Color(5, 252, 248), WIDTH, HEIGHT);
+
+        for (int i = 0; i < 100; i++) {
+            objects.add(new Firefly((int)(Math.random() * 10000 + 1000), (int)(Math.random() * 10000 + 1000), 5, 5));
+        }
 
         //set up and start the Timer
         timer = new Timer(10, new TimerListener());
         timer.start();
 
+        mouse = new Mouse();
+        this.addMouseListener(mouse);
+        this.addMouseMotionListener(mouse);
     }
 
     //TimerListener class that is called repeatedly by the timer
@@ -51,10 +63,65 @@ public class GlowAnimation extends JPanel {
                 objects.get(i).setX(objects.get(i).getX());
             }
 
+//            getMousePos();
+            cube.drawCube(mouseX, mouseY, mouseDown, g);
+
+            for (GameObject object : objects) {
+                object.draw(cube.getX(), cube.getY(), g);
+            }
+
+            g.setColor(Color.RED);
+
             repaint(); //leave this alone, it MUST  be the last thing in this method
         }
 
     }
+
+//    private void getMousePos() {
+//        mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX() - WIDTH/2;
+//        mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY() - HEIGHT/2;
+//    }
+
+    private class Mouse implements MouseListener, MouseMotionListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            mouseDown = true;
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            mouseDown = false;
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            mouseX = e.getX() - WIDTH/2;
+            mouseY = e.getY() - HEIGHT/2;
+        }
+    }
+
+    //ben was here
 
     public void glowEffect(GameObject o, int intensity, int levels, int radius, Graphics g) {
         Color color = new Color(o.getColor().getRGB());
@@ -71,8 +138,8 @@ public class GlowAnimation extends JPanel {
     public static void background(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
 
-        g2D.setPaint (new Color(0, 0, 0, 38));
-        g2D.fillRect(0, 0, 1920, 1080);
+        g2D.setPaint (new Color(0, 0, 0, 90));
+        g2D.fillRect(0, 0, WIDTH, HEIGHT);
     }
 
     //do not modify this
@@ -82,9 +149,9 @@ public class GlowAnimation extends JPanel {
 
     //main method with standard graphics code
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Animation Shell");
+        JFrame frame = new JFrame("Glow");
         frame.setSize(WIDTH, HEIGHT);
-        frame.setLocation(0, 0);
+        frame.setLocation(-8, 0);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(new GlowAnimation()); //TODO: Change this to the name of your class!
         frame.setVisible(true);
