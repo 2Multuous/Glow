@@ -7,11 +7,12 @@ public class Cube extends GameObject {
 
     private int numFlares;
 
-    public Cube(double x, double y, double direction, double width, int WIDTH, int HEIGHT) {
+    public Cube(double x, double y, double direction, double width, Color color, int WIDTH, int HEIGHT) {
         setX(x);
         setY(y);
         setDirection(direction);
         setWidth(width);
+        setColor(color);
 
         this.WIDTH = WIDTH;
         this.HEIGHT = HEIGHT;
@@ -28,7 +29,7 @@ public class Cube extends GameObject {
         setWidth(width);
     }
 
-    public void drawCube(Graphics g, int mouseX, int mouseY, boolean mouseDown) {
+    public void drawCube(int mouseX, int mouseY, boolean mouseDown, Graphics g) {
         move(mouseX, mouseY, mouseDown);
 
         Graphics2D g2d = (Graphics2D)g;
@@ -39,16 +40,16 @@ public class Cube extends GameObject {
         int centerY = HEIGHT/2;
 
         // (int)(getX() - getWidth()/2), (int)(getY() - getHeight()/2), (int)getWidth(), (int)getHeight()
-        Rectangle rect = new Rectangle(WIDTH/2, HEIGHT/2, (int)getWidth(), (int)getWidth());
+        Rectangle rect = new Rectangle((int)(WIDTH/2 + getX()), (int)(HEIGHT/2 + getY()), (int)getWidth(), (int)getWidth());
 
-        g2d.translate(centerX + getX(), centerY + getY());
-        g2d.rotate(Math.atan2(mouseY, mouseX));
-        g.translate(-centerX, -centerY);
+//        g2d.translate(centerX + getX(), centerY + getY());
+//        g2d.rotate(Math.atan2(mouseY, mouseX));
+//        g2d.translate(-centerX, -centerY);
 
         g2d.draw(rect);
         g2d.fill(rect);
 
-        g2d.setTransform(old);
+//        g2d.setTransform(old);
     }
 
     public void move(int mouseX, int mouseY, boolean mouseDown) {
