@@ -12,7 +12,7 @@ public class Firefly extends GameObject {
 		setColor(color);
 	}
 	
-	public void draw(Graphics g) {
+	public void draw(double cubeX, double cubeY, Graphics g) {
 		g.setColor(getColor());
 		g.fillRect((int)(getX()), (int)(getY()), (int)(getWidth()), (int)(getHeight()));
 	}
