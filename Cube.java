@@ -60,12 +60,16 @@ public class Cube extends GameObject {
         }
     }
 
+    public void grow(int widthAdded) {
+        setWidth(getWidth() + widthAdded);
+    }
+
     public void shrink(int widthTaken) {
         setWidth(getWidth() - widthTaken);
     }
 
-    public void grow(int widthAdded) {
-        setWidth(getWidth() + widthAdded);
+    public void pickupFlare() {
+        numFlares++;
     }
 
     public void dropFlare() {
