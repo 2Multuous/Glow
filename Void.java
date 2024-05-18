@@ -10,7 +10,10 @@ public class Void extends GameObject {
     private double goalX;
     private double goalY;
 
-    public Void(int speed, int WIDTH, int HEIGHT) {
+    public Void(double x, double y, double width, double speed, int WIDTH, int HEIGHT) {
+        setX(x);
+        setY(y);
+        setWidth(width);
         this.speed = speed;
 
         this.WIDTH = WIDTH;
