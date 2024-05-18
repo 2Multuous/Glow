@@ -3,7 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
+//joey sucks
 import javax.swing.*;
 
 @SuppressWarnings("serial")
@@ -11,8 +11,8 @@ import javax.swing.*;
 public class GlowAnimation extends JPanel {
 
     //TODO: set the initial width and height of your image
-    private static final int WIDTH = 400;
-    private static final int HEIGHT = 400;
+    private static final int WIDTH = 1920;
+    private static final int HEIGHT = 1080;
 
     //required global variables
     private BufferedImage image;
@@ -46,24 +46,24 @@ public class GlowAnimation extends JPanel {
              */
             background(g);
 
+            //update positions of objects
             for (int i = 0; i < objects.size(); i++) {
                 objects.get(i).setX(objects.get(i).getX());
             }
-
-            g.setColor(Color.cyan);
-
-            g.fillRect(200, 200, 10, 10);
 
             repaint(); //leave this alone, it MUST  be the last thing in this method
         }
 
     }
 
-    public void glowEffect(GameObject o, int intensity, int radius, Graphics g) {
-        g.setColor(o.getColor().brighter());
-        for (int i = 0; i < intensity; i++) {
-            g.setColor(g.getColor().darker());
-            g.fillOval((int) (o.getX() - (o.getWidth() / 2) - (radius / 2)), (int) (o.getY() - (o.getHeight() / 2) - (radius / 2)), (int) o.getWidth() + radius, (int) o.getHeight() + (radius / 2));
+    public void glowEffect(GameObject o, int intensity, int levels, int radius, Graphics g) {
+        Color color = new Color(o.getColor().getRGB());
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        for (int i = 1; i < levels + 1; i++) {
+            g.setColor(new Color(red, green, blue, intensity));
+            g.fillOval((int) (o.getX() - radius), (int) (o.getY() - radius), (int) (o.getWidth() + (radius * 2)), (int) (o.getHeight() + (radius * 2)));
         }
     }
 
@@ -72,7 +72,7 @@ public class GlowAnimation extends JPanel {
         Graphics2D g2D = (Graphics2D) g;
 
         g2D.setPaint (new Color(0, 0, 0, 38));
-        g2D.fillRect(0, 0, 1600, 1000);
+        g2D.fillRect(0, 0, 1920, 1080);
     }
 
     //do not modify this
