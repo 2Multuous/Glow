@@ -36,29 +36,33 @@ public class Cube extends GameObject {
         g2d.setColor(getColor()); // Color: 5, 252, 248 ?
         AffineTransform old = g2d.getTransform();
 
-//        int centerX = WIDTH/2;
-//        int centerY = HEIGHT/2;
+        int centerX = WIDTH/2;
+        int centerY = HEIGHT/2;
 
-        // (int)(getX() - getWidth()/2), (int)(getY() - getHeight()/2), (int)getWidth(), (int)getHeight()
-//        Rectangle rect = new Rectangle((int)(WIDTH/2 + getX()), (int)(HEIGHT/2 + getY()), (int)getWidth(), (int)getWidth());
-        g.fillRect((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
+//         (int)(getX() - getWidth()/2), (int)(getY() - getHeight()/2), (int)getWidth(), (int)getHeight()
+        Rectangle rect = new Rectangle((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
+//        g.fillRect((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
 
 //        g2d.translate(centerX + getX(), centerY + getY());
-//        g2d.rotate(Math.atan2(mouseY, mouseX));
+        g2d.rotate((Math.atan2(mouseY, mouseX) + Math.PI/2), (double)WIDTH/2, (double)HEIGHT/2);
+        System.out.println(mouseX + ", " + mouseY);
 //        g2d.translate(-centerX, -centerY);
 
-//        g2d.draw(rect);
-//        g2d.fill(rect);
+        System.out.println("rotation angle: " + Math.atan2(mouseY, mouseX) * 360/(2 * Math.PI));
+        g2d.draw(rect);
+        g2d.fill(rect);
 
-//        g2d.setTransform(old);
+        g2d.setTransform(old);
     }
 
     public void move(int mouseX, int mouseY, boolean mouseDown) {
         setDirection(Math.atan2(mouseY, mouseX));
 
         if (mouseDown) {
-            setX(getX() + Math.cos(getDirection()));
-            setY(getY() + Math.sin(getDirection()));
+            setX(getX() + Math.cos(getDirection()) * 20);
+            System.out.println(mouseX);
+            setY(getY() + Math.sin(getDirection()) * 20);
+            System.out.println(mouseY);
         }
     }
 
