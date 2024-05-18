@@ -1,32 +1,33 @@
 
 public abstract class GameObject {
-	private int width;
-	private int x;
-	private int y;
+	private double width;
+	private double height;
+	private double x;
+	private double y;
 	private double direction;
-	private int brightness;
+	private double brightness;
 	
-	public int getWidth() {
+	public double getWidth() {
 		return width;
 	}
 	
-	public void setWidth(int width) {
+	public void setWidth(double width) {
 		this.width = width;
 	}
 	
-	public int getX() {
+	public double getX() {
 		return x;
 	}
 	
-	public void setX(int x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 	
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 	
-	public void setY(int y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 	
@@ -38,11 +39,19 @@ public abstract class GameObject {
 		this.direction = direction;
 	}
 	
-	public int getBrightness() {
+	public double getBrightness() {
 		return brightness;
 	}
 	
-	public void setBrightness(int brightness) {
+	public void setBrightness(double brightness) {
 		this.brightness = brightness;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
 	}
 }
