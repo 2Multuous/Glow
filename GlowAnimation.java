@@ -53,7 +53,7 @@ public class GlowAnimation extends JPanel {
             g.setColor(Color.cyan);
 
             g.fillRect(200, 200, 10, 10);
-            
+
             repaint(); //leave this alone, it MUST  be the last thing in this method
         }
 
