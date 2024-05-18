@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class Cube extends GameObject {
     private final int WIDTH;
@@ -32,13 +33,22 @@ public class Cube extends GameObject {
 
         Graphics2D g2d = (Graphics2D)g;
         g2d.setColor(getColor()); // Color: 5, 252, 248 ?
+        AffineTransform old = g2d.getTransform();
+
+        int centerX = WIDTH/2;
+        int centerY = HEIGHT/2;
 
         // (int)(getX() - getWidth()/2), (int)(getY() - getHeight()/2), (int)getWidth(), (int)getHeight()
         Rectangle rect = new Rectangle(WIDTH/2, HEIGHT/2, (int)getWidth(), (int)getWidth());
 
+        g2d.translate(centerX + getX(), centerY + getY());
         g2d.rotate(Math.atan2(mouseY, mouseX));
+        g.translate(-centerX, -centerY);
+
         g2d.draw(rect);
         g2d.fill(rect);
+
+        g2d.setTransform(old);
     }
 
     public void move(int mouseX, int mouseY, boolean mouseDown) {
@@ -48,6 +58,10 @@ public class Cube extends GameObject {
             setX(getX() + Math.cos(getDirection()));
             setY(getY() + Math.sin(getDirection()));
         }
+    }
+
+    public void shrink(int widthTaken) {
+        setWidth(getWidth() - widthTaken);
     }
 
     public void grow(int widthAdded) {
