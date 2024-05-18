@@ -1,3 +1,4 @@
+import java.awt.Color;
 
 public abstract class GameObject {
 	private double width;
@@ -6,6 +7,7 @@ public abstract class GameObject {
 	private double y;
 	private double direction;
 	private double brightness;
+	private Color color;
 	
 	public double getWidth() {
 		return width;
@@ -53,5 +55,13 @@ public abstract class GameObject {
 
 	public void setHeight(double height) {
 		this.height = height;
+	}
+
+	public Color getColor() {
+		return color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 }
