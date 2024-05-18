@@ -11,6 +11,13 @@ public class Wisp extends Firefly{
 		setThreshold(threshold);
 		setSpeed(speed);
 	}
+
+	public Wisp(double x, double y, double width, double height) {
+		super(x, y, width, height);
+		//TODO balance change these values
+		setThreshold(50);
+		setSpeed(2);
+	}
 	
 	public double calcDistance(double cubeX, double cubeY) {
 		double xDistance = Math.abs(cubeX - getX());
