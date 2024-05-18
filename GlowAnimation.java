@@ -17,7 +17,7 @@ public class GlowAnimation extends JPanel {
     private BufferedImage image;
     private Graphics g;
     private Timer timer;
-    private int i; //TODO: change this to whatever object(s) you are animating
+    private GameObject obj; //TODO: change this to whatever object(s) you are animating
     private String string;
 
     //Constructor required by BufferedImage
@@ -50,8 +50,12 @@ public class GlowAnimation extends JPanel {
 
     }
 
-    public void glowEffect(GameObject o, int strength, int radius, Graphics g) {
-        g.fillOval(o.getX() - (o.getWidth() / 2), o.getY - (o.getHeight() / 2);
+    public void glowEffect(GameObject o, int intensity, int radius, Graphics g) {
+        g.setColor(o.getColor().brighter());
+        for (int i = 0; i < intensity; i++) {
+            g.setColor(g.getColor().darker());
+            g.fillOval((int) (o.getX() - (o.getWidth() / 2) - (radius / 2)), (int) (o.getY() - (o.getHeight() / 2) - (radius / 2)), (int) o.getWidth() + radius, (int) o.getHeight() + (radius / 2));
+        }
     }
     public static void background(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
