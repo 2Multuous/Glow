@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Graphics;
 
 public abstract class GameObject {
 	private double width;
@@ -64,4 +65,6 @@ public abstract class GameObject {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+
+	public abstract void draw(double cubeX, double cubeY, Graphics g);
 }
