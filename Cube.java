@@ -36,18 +36,19 @@ public class Cube extends GameObject {
         g2d.setColor(getColor()); // Color: 5, 252, 248 ?
         AffineTransform old = g2d.getTransform();
 
-        int centerX = WIDTH/2;
-        int centerY = HEIGHT/2;
+//        int centerX = WIDTH/2;
+//        int centerY = HEIGHT/2;
 
         // (int)(getX() - getWidth()/2), (int)(getY() - getHeight()/2), (int)getWidth(), (int)getHeight()
-        Rectangle rect = new Rectangle((int)(WIDTH/2 + getX()), (int)(HEIGHT/2 + getY()), (int)getWidth(), (int)getWidth());
+//        Rectangle rect = new Rectangle((int)(WIDTH/2 + getX()), (int)(HEIGHT/2 + getY()), (int)getWidth(), (int)getWidth());
+        g.fillRect((int)(WIDTH/2), (int)(HEIGHT/2), (int)getWidth(), (int)getWidth());
 
 //        g2d.translate(centerX + getX(), centerY + getY());
 //        g2d.rotate(Math.atan2(mouseY, mouseX));
 //        g2d.translate(-centerX, -centerY);
 
-        g2d.draw(rect);
-        g2d.fill(rect);
+//        g2d.draw(rect);
+//        g2d.fill(rect);
 
 //        g2d.setTransform(old);
     }
