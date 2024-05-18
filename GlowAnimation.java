@@ -50,8 +50,8 @@ public class GlowAnimation extends JPanel {
 
     }
 
-    public void glowEffect(int strength, int radius, Graphics g) {
-        g.fillOval(object.getX() - object.getWidth());
+    public void glowEffect(GameObject o, int strength, int radius, Graphics g) {
+        g.fillOval(o.getX() - (o.getWidth() / 2), o.getY - (o.getHeight() / 2);
     }
     public static void background(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
