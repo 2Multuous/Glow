@@ -1,90 +1,157 @@
 import java.awt.*;
-import java.awt.geom.AffineTransform;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+//joey sucks
+import javax.swing.*;
 
-public class Cube extends GameObject {
-    private final int WIDTH;
-    private final int HEIGHT;
+@SuppressWarnings("serial")
+public class GlowAnimation extends JPanel {
+    private static final int WIDTH = 1920;
+    private static final int HEIGHT = 1080;
 
-    private int numFlares;
+    // required global variables
+    private BufferedImage image;
+    private Graphics g;
+    private Timer timer;
 
-    public Cube(double x, double y, double direction, double width, Color color, int WIDTH, int HEIGHT) {
-        setX(x);
-        setY(y);
-        setDirection(direction);
-        setWidth(width);
-        setColor(color);
+    private GameObject obj;
+    private String string;
+    private ArrayList<GameObject> objects;
+    private Cube cube;
+    private int mouseX;
+    private int mouseY;
+    private boolean mouseDown;
+    private Mouse mouse;
 
-        this.WIDTH = WIDTH;
-        this.HEIGHT = HEIGHT;
+    //Constructor required by BufferedImage
+    public GlowAnimation() {
+        //set up Buffered Image and Graphics objects
+        image =  new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        g = image.getGraphics();
 
-        numFlares = 0;
+        objects = new ArrayList<GameObject>();
+        mouseX = 0;
+        mouseY = 0;
+
+        cube = new Cube(0, 0, 0.0, 50, new Color(5, 252, 248), WIDTH, HEIGHT);
+
+        for (int i = 0; i < 100; i++) {
+            objects.add(new Firefly((int)(Math.random() * 10000 + 1000), (int)(Math.random() * 10000 + 1000), 5, 5));
+        }
+
+        //set up and start the Timer
+        timer = new Timer(10, new TimerListener());
+        timer.start();
+
+        mouse = new Mouse();
+        this.addMouseListener(mouse);
+        this.addMouseMotionListener(mouse);
     }
 
-    public Cube(double width, int WIDTH, int HEIGHT) {
-        this.WIDTH = WIDTH;
-        this.HEIGHT = HEIGHT;
+    //TimerListener class that is called repeatedly by the timer
+    private class TimerListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            background(g);
 
-        setX(0);
-        setY(0);
-        setWidth(width);
+            //update positions of objects
+            for (int i = 0; i < objects.size(); i++) {
+                objects.get(i).setX(objects.get(i).getX());
+            }
+
+            cube.drawCube(mouseX, mouseY, mouseDown, g);
+
+            for (GameObject object : objects) {
+                object.draw(cube.getX(), cube.getY(), g);
+            }
+
+            g.setColor(Color.RED);
+
+            repaint(); //leave this alone, it MUST  be the last thing in this method
+        }
+
     }
 
-    public void drawCube(int mouseX, int mouseY, boolean mouseDown, Graphics g) {
-        move(mouseX, mouseY, mouseDown);
+//    private void getMousePos() {
+//        mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX() - WIDTH/2;
+//        mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY() - HEIGHT/2;
+//    }
 
-        Graphics2D g2d = (Graphics2D)g;
-        g2d.setColor(getColor()); // Color: 5, 252, 248 ?
-        AffineTransform old = g2d.getTransform();
+    private class Mouse implements MouseListener, MouseMotionListener {
 
-        int centerX = WIDTH/2;
-        int centerY = HEIGHT/2;
+        @Override
+        public void mouseClicked(MouseEvent e) {
 
-//         (int)(getX() - getWidth()/2), (int)(getY() - getHeight()/2), (int)getWidth(), (int)getHeight()
-        Rectangle rect = new Rectangle((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
-//        g.fillRect((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
+        }
 
-//        g2d.translate(centerX + getX(), centerY + getY());
-        g2d.rotate((Math.atan2(mouseY, mouseX) + Math.PI/2), (double)WIDTH/2, (double)HEIGHT/2);
-        System.out.println(mouseX + ", " + mouseY);
-//        g2d.translate(-centerX, -centerY);
+        @Override
+        public void mousePressed(MouseEvent e) {
+            mouseDown = true;
+        }
 
-        System.out.println("rotation angle: " + Math.atan2(mouseY, mouseX) * 360/(2 * Math.PI));
-        g2d.draw(rect);
-        g2d.fill(rect);
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            mouseDown = false;
+        }
 
-        g2d.setTransform(old);
-    }
+        @Override
+        public void mouseEntered(MouseEvent e) {
 
-    public void move(int mouseX, int mouseY, boolean mouseDown) {
-        setDirection(Math.atan2(mouseY, mouseX));
+        }
 
-        if (mouseDown) {
-            setX(getX() + Math.cos(getDirection()) * 20);
-            System.out.println(mouseX);
-            setY(getY() + Math.sin(getDirection()) * 20);
-            System.out.println(mouseY);
+        @Override
+        public void mouseExited(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            mouseX = e.getX() - WIDTH/2;
+            mouseY = e.getY() - HEIGHT/2;
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            mouseX = e.getX() - WIDTH/2;
+            mouseY = e.getY() - HEIGHT/2;
         }
     }
 
-    public void grow(int widthAdded) {
-        setWidth(getWidth() + widthAdded);
+    //ben was here
+
+    public void glowEffect(GameObject o, int intensity, int levels, int radius, Graphics g) {
+        Color color = new Color(o.getColor().getRGB());
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        for (int i = 1; i < levels + 1; i++) {
+            g.setColor(new Color(red, green, blue, intensity));
+            g.fillOval((int) (o.getX() - radius), (int) (o.getY() - radius), (int) (o.getWidth() + (radius * 2)), (int) (o.getHeight() + (radius * 2)));
+        }
     }
 
-    public void shrink(int widthTaken) {
-        setWidth(getWidth() - widthTaken);
+
+    public static void background(Graphics g) {
+        Graphics2D g2D = (Graphics2D) g;
+
+        g2D.setPaint (new Color(0, 0, 0, 90));
+        g2D.fillRect(0, 0, WIDTH, HEIGHT);
     }
 
-    public void pickupFlare() {
-        numFlares++;
+    //do not modify this
+    public void paintComponent(Graphics g) {
+        g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
     }
 
-    public void dropFlare() {
-        numFlares--;
+    //main method with standard graphics code
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Glow");
+        frame.setSize(WIDTH, HEIGHT);
+        frame.setLocation(-8, 0);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(new GlowAnimation());
+        frame.setVisible(true);
     }
 
-    // Dummy method
-    @Override
-    public void draw(double cubeX, double cubeY, Graphics g) {
-        // THIS DOES NOTHING
-    }
 }
