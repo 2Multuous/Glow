@@ -92,6 +92,9 @@ public class GlowAnimation extends JPanel {
         	else if(scene.equals("intro")) {
         		drawIntro(g);
         	}
+		else if(scene.equals("pause")) {
+        		drawPause(g);
+        	}
             repaint();
         }
     }
@@ -179,6 +182,16 @@ public class GlowAnimation extends JPanel {
 					scene = "game";
 				}
 			}
+			else if(scene.equals("game")) {
+				if(e.getKeyCode() == 80) {
+					scene = "pause";
+				}
+			}
+			else if(scene.equals("pause")) {
+				if(e.getKeyCode() == 80) {
+					scene = "game";
+				}
+			}
 		}
 
 		@Override
@@ -208,6 +221,15 @@ public class GlowAnimation extends JPanel {
     	g.drawString("of the cursor", 100, 500);
     	g.drawString("press [p] to pause", 100, 600);
     	g.drawString("press [c] to continue", 100, 700);
+    }
+
+    public static void drawPause(Graphics g) {
+    	background(g);
+    	g.setColor(Color.WHITE);
+    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
+    	g.drawString("PAUSED", HEIGHT / 2 - 70, 400);
+    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+    	g.drawString("Press [p] to resume", HEIGHT / 2 + 55, 600);
     }
 
 //    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
