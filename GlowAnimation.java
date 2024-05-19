@@ -26,7 +26,7 @@ public class GlowAnimation extends JPanel {
     private Beam beam;
     private Firefly f;
 
-    //Constructor required by BufferedImage
+    // Constructor required by BufferedImage
     public GlowAnimation() {
         //set up Buffered Image and Graphics objects
         image =  new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -44,7 +44,6 @@ public class GlowAnimation extends JPanel {
             objects.add(new Firefly((int)(Math.random() * 10000 + 1000), (int)(Math.random() * 10000 + 1000), 5, 5));
         }
 
-        //set up and start the Timer
         timer = new Timer(10, new TimerListener());
         timer.start();
 
@@ -53,7 +52,6 @@ public class GlowAnimation extends JPanel {
         this.addMouseMotionListener(mouse);
     }
 
-    //TimerListener class that is called repeatedly by the timer
     private class TimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -76,13 +74,12 @@ public class GlowAnimation extends JPanel {
 
             g.setColor(Color.RED);
 
-            repaint(); //leave this alone, it MUST  be the last thing in this method
+            repaint();
         }
     }
 
     public boolean isInBeam(GameObject object) {
-        double angle = Math.atan2(object.getY() - cube.getY(), object.getX() - cube.getX()) + Math.PI/2;
-        System.out.println(angle + " / " + cube.getDirection());
+        double angle = Math.atan2(object.getY() - cube.getY(), object.getX() - cube.getX());
         return angle < beam.getDirection() + Math.PI/12 && angle > beam.getDirection() - Math.PI/12;
     }
 
