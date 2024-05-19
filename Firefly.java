@@ -14,7 +14,7 @@ public class Firefly extends GameObject {
 
 	public Firefly(double x, double y, double width, double height) {
 		setX(x);
-		setY(y);
+		setY(-y);
 		setWidth(width);
 		setHeight(height);
 		// these can be changed in the future, only temporary rn
@@ -24,6 +24,6 @@ public class Firefly extends GameObject {
 	
 	public void draw(double cubeX, double cubeY, Graphics g) {
 		g.setColor(getColor());
-		g.fillRect((int)(getX() - cubeX), (int)(getY() - cubeY), (int)(getWidth()), (int)(getHeight()));
+		g.fillRect((int)(getX() - cubeX - getWidth()/2), (int)(getY() - cubeY - getHeight()/2), (int)(getWidth()), (int)(getHeight()));
 	}
 }
