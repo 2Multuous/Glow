@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 //joey sucks
 import javax.swing.*;
@@ -76,18 +77,32 @@ public class GlowAnimation extends JPanel {
             if(scene.equals("game")) {
                 background(g);
 
+                // Beam
                 beam.setDirection(cube.getDirection());
                 beam.setWidth(cube.getWidth());
                 beam.draw(g);
+
+                // Cube
                 cube.drawCube(mouseX, mouseY, mouseDown, g);
+
+                // Fireflies
+                int r = (int)(Math.random() * 10000 + WIDTH/2);
+                double theta = Math.random() * Math.PI * 2;
+                if (hasSpace(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 200, new ArrayList<GameObject>(fireflies))) {
+                    fireflies.add(new Firefly((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
+                }
 
                 // TODO: add new fireflies in random pos around player if there's no others in 500 px radius
                 // TODO: remove fireflies when too far (~10000, 5000 px?)
-                for (Firefly firefly : fireflies) {
-                    if (isInBeam(firefly) || drawAll) {
-                        firefly.draw(cube.getX(), cube.getY(), g);
+                for (int i = fireflies.size() - 1; i >= 0; i--) {
+                    if (isInBeam(fireflies.get(i)) || drawAll) {
+                        fireflies.get(i).draw(cube.getX(), cube.getY(), g);
+                    }
+                    if (distance(cube.getX(), cube.getY(), fireflies.get(i).getX(), fireflies.get(i).getY()) > WIDTH) {
+                        fireflies.remove(i);
                     }
                 }
+
 
                 g.setColor(Color.RED);
             }
@@ -102,6 +117,15 @@ public class GlowAnimation extends JPanel {
             }
             repaint();
         }
+    }
+
+    public boolean hasSpace(double x, double y, double radius, ArrayList<GameObject> objects) {
+        for (GameObject object : objects) {
+            if (distance(x, y, object.getX(), object.getY()) < radius) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean isInBeam(GameObject object) {
@@ -121,6 +145,10 @@ public class GlowAnimation extends JPanel {
             }
         }
         return false;
+    }
+
+    public double distance(double x1, double y1, double x2, double y2) {
+        return Math.hypot(x2 - x1, y2 - y1);
     }
 
     private class Mouse implements MouseListener, MouseMotionListener {
