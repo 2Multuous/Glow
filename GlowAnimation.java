@@ -84,7 +84,7 @@ public class GlowAnimation extends JPanel {
                 // Cube
                 cube.drawCube(mouseX, mouseY, mouseDown, g);
                 for (int i = 0; i < 10; i++) {
-                    g.setColor(new Color(0, 255, 246, 1 * i));
+                    g.setColor(new Color(0, 255, 246, i));
                     g.fillOval(WIDTH/2 - i * 10, HEIGHT/2 - i * 10, i * 2 * 10, i * 2 * 10);
                 }
 
