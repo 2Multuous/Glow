@@ -49,12 +49,13 @@ public class GlowAnimation extends JPanel {
         flareflies = new ArrayList<>();
         wisps = new ArrayList<>();
         flares = new ArrayList<>();
-        sparks = new ArrayList<Spark>();
+        sparks = new ArrayList<>();
+
         createSparks();
 
         cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248));
         beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60));
-        theVoid = new Void(-1000, 0, 200, 7.4);
+        theVoid = new Void(-10000, 0, 200, 7.4);
 
         timer = new Timer(10, new TimerListener());
         timer.start();
@@ -66,8 +67,6 @@ public class GlowAnimation extends JPanel {
         input = new Input();
         setFocusable(true);
         this.addKeyListener(input);
-
-     //   HighScoreManager.createFile();
     }
 
     private class TimerListener implements ActionListener {
@@ -75,8 +74,6 @@ public class GlowAnimation extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if(scene.equals("game")) {
                 background(g);
-
-                drawSparks();
 
                 drawCharacter();
 
@@ -88,10 +85,9 @@ public class GlowAnimation extends JPanel {
 
                 drawFlares();
 
+                drawSparks();
+
                 g.setColor(Color.RED);
-                if(distance(cube.getX(), cube.getY(), theVoid.getX(), theVoid.getY()) <= 5) {
-                	scene = "game over";
-                }
             }
             else if(scene.equals("menu")) {
                 drawMenu(g);
@@ -103,29 +99,9 @@ public class GlowAnimation extends JPanel {
                 drawPause(g);
             }
             else if(scene.equals("game over")) {
-            	drawGameOver(g);
+                drawGameOver(cube.getWidth(), g);
             }
             repaint();
-        }
-    }
-
-    // Sparks
-    public void drawSparks() {
-            for (int i = sparks.size() - 1; i >= 0; i--) {
-                if (sparks.get(i).getTime() <= 0) {
-                    sparks.remove(i);
-                    sparks.add(new Spark((int) (Math.random() * 100 - 50) + WIDTH / 2, (int) (Math.random() * 100 - 50) + HEIGHT / 2));
-                }
-
-                sparks.get(i).draw((int) cube.getX(), (int) cube.getY(), g);
-                glowEffect(sparks.get(i), 2, 10, 10);
-                sparks.get(i).move();
-            }
-    }
-
-    public void createSparks() {
-        for (int i = 0; i < 1000; i++) {
-            sparks.add(new Spark((int) (Math.random() * 100 - 50) + WIDTH / 2, (int) (Math.random() * 100 - 50) + HEIGHT / 2));
         }
     }
 
@@ -145,6 +121,10 @@ public class GlowAnimation extends JPanel {
 
         // Cube
         cube.drawCube(mouseX, mouseY, mouseDown, g);
+
+        if (distance(cube.getX(), cube.getY(), theVoid.getX(), theVoid.getY()) < cube.getWidth()/2 + theVoid.getWidth()/2 || cube.getWidth() <= 0) {
+            scene = "game over";
+        }
     } // Draws cube and beam
 
     public void drawFireflies() {
@@ -213,6 +193,38 @@ public class GlowAnimation extends JPanel {
         }
     }
 
+    // Sparks
+    public void drawSparks() {
+        for (int i = sparks.size() - 1; i >= 0; i--) {
+            if (sparks.get(i).getTime() <= 0) {
+                sparks.remove(i);
+                sparks.add(new Spark((int) (Math.random() * 100 - 50) + WIDTH / 2, (int) (Math.random() * 100 - 50) + HEIGHT / 2));
+            }
+
+            sparks.get(i).draw((int) cube.getX(), (int) cube.getY(), g);
+            glowEffect(sparks.get(i), 2, 10, 10);
+            sparks.get(i).move();
+        }
+    }
+
+    public void createSparks() {
+        for (int i = 0; i < 1000; i++) {
+            sparks.add(new Spark((int) (Math.random() * 100 - 50) + WIDTH / 2, (int) (Math.random() * 100 - 50) + HEIGHT / 2));
+        }
+    }
+
+    public void glowEffect(Spark o, int intensity, int levels, int radius) {
+        Color color = new Color(o.getColor().getRGB());
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        for (int i = 1; i < levels + 1; i++) {
+            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
+            g.fillOval((int) (o.getX() - radius / levels * i) - (int) cube.getX() - 1, (int) (o.getY() - radius / levels * i) - (int) cube.getY() - 1, (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
+        }
+    }
+
+
     public static void drawMenu(Graphics g) {
         background(g);
         g.setColor(Color.WHITE);
@@ -243,14 +255,13 @@ public class GlowAnimation extends JPanel {
         g.drawString("Press [p] to resume", HEIGHT / 2 + 55, 600);
     }
 
-     public static void drawGameOver(Graphics g) {
-    	background(g);
+    public static void drawGameOver(double cubeWidth, Graphics g) {
+        background(g);
         g.setColor(Color.WHITE);
         g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
         g.drawString("GAME OVER", HEIGHT / 2 - 300, 200);
         g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-        g.drawString("Score: " + (int) (cube.getWidth()), 100, 300);
-        g.drawString("Press [p] to play again", 100, 400);
+        g.drawString("Score: " + (int) (cubeWidth), 100, 300);
     }
 
 
@@ -287,16 +298,16 @@ public class GlowAnimation extends JPanel {
         return Math.hypot(x2 - x1, y2 - y1);
     }
 
-    public void glowEffect(Spark o, int intensity, int levels, int radius) {
-        Color color = new Color(o.getColor().getRGB());
-        int red = color.getRed();
-        int green = color.getGreen();
-        int blue = color.getBlue();
-        for (int i = 1; i < levels + 1; i++) {
-            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
-            g.fillOval((int) (o.getX() - radius / levels * i) - (int) cube.getX() - 1, (int) (o.getY() - radius / levels * i) - (int) cube.getY() - 1, (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
-        }
-    }
+//    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
+//        Color color = new Color(o.getColor().getRGB());
+//        int red = color.getRed();
+//        int green = color.getGreen();
+//        int blue = color.getBlue();
+//        for (int i = 1; i < levels + 1; i++) {
+//            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
+//            g.fillOval((int) (o.getX() - radius / levels * i), (int) (o.getY() - radius / levels * i), (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
+//        }
+//    }
 
     // Listeners and stuff
     private class Mouse implements MouseListener, MouseMotionListener {
@@ -310,7 +321,7 @@ public class GlowAnimation extends JPanel {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 mouseDown = true;
             } else if (e.getButton() == MouseEvent.BUTTON3 && !cube.isFlareActive()) {
-                flares.add(new Flare(cube.getX(), cube.getY()));
+                flares.add(new Flare(cube.getX() - cube.getWidth()/2, -cube.getY() + cube.getWidth()/2));
                 cube.setFlareActive(true);
             }
         }
@@ -379,10 +390,10 @@ public class GlowAnimation extends JPanel {
                 }
             }
             else if(scene.equals("game over")) {
-            	if(e.getKeyCode() == 80) {
-            		cube.setWidth(20);
-            		scene = "game";
-            	}
+                if(e.getKeyCode() == 80) {
+                    cube.setWidth(20);
+                    scene = "game";
+                }
             }
         }
 
