@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 //joey sucks
 import javax.swing.*;
@@ -53,11 +52,11 @@ public class GlowAnimation extends JPanel {
         cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248));
         beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60));
 
-        for (int i = 0; i < 500; i++) {
-            int r = (int)(Math.random() * 10000 + WIDTH/2);
-            double theta = Math.random() * Math.PI * 2;
-            fireflies.add(new Firefly((int)(r * Math.cos(theta)), (int)(r * Math.sin(theta)), 5, 5));
-        }
+//        for (int i = 0; i < 100; i++) {
+//            int r = (int)(Math.random() * 10000 + WIDTH/2);
+//            double theta = Math.random() * Math.PI * 2;
+//            fireflies.add(new Firefly((int)(r * Math.cos(theta)), (int)(r * Math.sin(theta)), 5, 5));
+//        }
 
         timer = new Timer(10, new TimerListener());
         timer.start();
@@ -84,22 +83,31 @@ public class GlowAnimation extends JPanel {
 
                 // Cube
                 cube.drawCube(mouseX, mouseY, mouseDown, g);
+                for (int i = 0; i < 10; i++) {
+                    g.setColor(new Color(0, 255, 246, 1 * i));
+                    g.fillOval(WIDTH/2 - i * 10, HEIGHT/2 - i * 10, i * 2 * 10, i * 2 * 10);
+                }
 
                 // Fireflies
                 int r = (int)(Math.random() * 10000 + WIDTH/2);
                 double theta = Math.random() * Math.PI * 2;
-                if (hasSpace(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 200, new ArrayList<GameObject>(fireflies))) {
+                if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 2000, new ArrayList<GameObject>(fireflies))) {
                     fireflies.add(new Firefly((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
                 }
 
-                // TODO: add new fireflies in random pos around player if there's no others in 500 px radius
-                // TODO: remove fireflies when too far (~10000, 5000 px?)
                 for (int i = fireflies.size() - 1; i >= 0; i--) {
                     if (isInBeam(fireflies.get(i)) || drawAll) {
                         fireflies.get(i).draw(cube.getX(), cube.getY(), g);
                     }
                     if (distance(cube.getX(), cube.getY(), fireflies.get(i).getX(), fireflies.get(i).getY()) > WIDTH) {
                         fireflies.remove(i);
+                    }
+                }
+
+                for (int i = fireflies.size() - 1; i >= 0; i--) {
+                    if (distance(cube.getX(), cube.getY(), fireflies.get(i).getX(), fireflies.get(i).getY()) < cube.getWidth() - fireflies.get(i).getWidth()) {
+                        fireflies.remove(i);
+                        cube.grow(1);
                     }
                 }
 
@@ -119,9 +127,10 @@ public class GlowAnimation extends JPanel {
         }
     }
 
-    public boolean hasSpace(double x, double y, double radius, ArrayList<GameObject> objects) {
+    public boolean hasSpaceAmongObjects(double x, double y, double radius, ArrayList<GameObject> objects) {
         for (GameObject object : objects) {
             if (distance(x, y, object.getX(), object.getY()) < radius) {
+                System.out.println("nope");
                 return false;
             }
         }
