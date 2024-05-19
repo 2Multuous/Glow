@@ -25,6 +25,7 @@ public class GlowAnimation extends JPanel {
     private Mouse mouse;
     private Beam beam;
     private Firefly f;
+    private String scene;
 
     // Constructor required by BufferedImage
     public GlowAnimation() {
