@@ -38,7 +38,6 @@ public class Wisp extends Firefly{
 	}
 
 	public void move(double cubeX, double cubeY) {
-		double slope = Math.tan((getX() - cubeX)/(getY() - cubeY));
 		if(calcDistance(cubeX, cubeY) < threshold) {
 			speed += 0.1;
 
@@ -50,11 +49,6 @@ public class Wisp extends Firefly{
 			if (speed > 4.5) {
 				speed = 4.5;
 			}
-
-			// This can be shrunk with math
-			// But for now
-
-			// I will allow it
 		} else {
 			speed = 0;
 		}
