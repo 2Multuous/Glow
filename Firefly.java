@@ -24,6 +24,6 @@ public class Firefly extends GameObject {
 	
 	public void draw(double cubeX, double cubeY, Graphics g) {
 		g.setColor(getColor());
-		g.fillRect((int)(getX()), (int)(getY()), (int)(getWidth()), (int)(getHeight()));
+		g.fillRect((int)(getX() - cubeX), (int)(getY() - cubeY), (int)(getWidth()), (int)(getHeight()));
 	}
 }
