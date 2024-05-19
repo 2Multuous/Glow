@@ -38,7 +38,6 @@ public class GlowAnimation extends JPanel {
 
         cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248), WIDTH, HEIGHT);
         beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60), WIDTH, HEIGHT);
-        f = new Firefly(200, 200, 5, 5);
 
         for (int i = 0; i < 100; i++) {
             objects.add(new Firefly((int)(Math.random() * 10000 + 1000), (int)(Math.random() * 10000 + 1000), 5, 5));
@@ -63,24 +62,13 @@ public class GlowAnimation extends JPanel {
             cube.drawCube(mouseX, mouseY, mouseDown, g);
 
             for (GameObject object : objects) {
-                if (isInBeam(object)) {
-                    object.draw(cube.getX(), cube.getY(), g);
-                }
-            }
-
-            if (isInBeam(f)) {
-                f.draw(cube.getX(), cube.getY(), g);
+                object.draw(cube.getX(), cube.getY(), g);
             }
 
             g.setColor(Color.RED);
 
             repaint();
         }
-    }
-
-    public boolean isInBeam(GameObject object) {
-        double angle = Math.atan2(object.getY() - cube.getY(), object.getX() - cube.getX());
-        return angle < beam.getDirection() + Math.PI/12 && angle > beam.getDirection() - Math.PI/12;
     }
 
     private class Mouse implements MouseListener, MouseMotionListener {
@@ -112,13 +100,13 @@ public class GlowAnimation extends JPanel {
         @Override
         public void mouseDragged(MouseEvent e) {
             mouseX = e.getX() - WIDTH/2;
-            mouseY = e.getY() - HEIGHT/2;
+            mouseY = -(e.getY() - HEIGHT/2);
         }
 
         @Override
         public void mouseMoved(MouseEvent e) {
             mouseX = e.getX() - WIDTH/2;
-            mouseY = e.getY() - HEIGHT/2;
+            mouseY = -(e.getY() - HEIGHT/2);
         }
     }
 
