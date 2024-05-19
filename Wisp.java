@@ -5,7 +5,7 @@ public class Wisp extends Firefly{
 
 	private double threshold;
 	private double speed;
-	
+
 	public Wisp(double x, double y, double width, double height, double brightness, Color color, double threshold, double speed) {
 		super(x, y, width, height, brightness, color);
 		setThreshold(threshold);
@@ -16,46 +16,47 @@ public class Wisp extends Firefly{
 		super(x, y, width, height);
 		setThreshold(200);
 		setSpeed(2);
-	}
-	
-	public double calcDistance(double cubeX, double cubeY) {
-		double xDistance = Math.abs(cubeX - getX());
-		double yDistance = Math.abs(cubeY - getY());
-		double out = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-		return out;
+		setColor(Color.YELLOW);
 	}
 
 	@Override
 	public void draw(double cubeX, double cubeY, Graphics g) {
 		move(cubeX, cubeY);
-		
-		if(calcDistance(cubeX, cubeY) > threshold) {
+
+		if(calcDistance(cubeX, cubeY) < threshold) {
 			double percentage = Math.min(calcDistance(cubeX, cubeY) / threshold, 1);
 			setColor(new Color(255, (int) (255 * percentage), 0));
+		} else {
+			setColor(Color.YELLOW);
 		}
 		g.setColor(getColor());
-		g.fillRect((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH), (int) (getY() - cubeY - getHeight() / 2), (int) (getWidth()), (int) (getHeight()));
+		g.fillRect((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH/2), (int)(getY() - cubeY - getHeight()/2 + GlowAnimation.HEIGHT/2), (int) (getWidth()), (int) (getHeight()));
 	}
-	
+
+	public double calcDistance(double cubeX, double cubeY) {
+		return Math.hypot(getX() - cubeX, getY() - cubeY);
+	}
+
 	public void move(double cubeX, double cubeY) {
-		if(calcDistance(cubeX, cubeY) >= threshold) {
-			if(cubeX > getX()) {
-				setX(getX() - speed / 2);
-			}
-			else if(cubeX < getX()) {
-				setX(getX() + speed / 2);
-			}
-			if(cubeY > getY()) {
-				setY(getY() - speed / 2);
-			}
-			else if(cubeY < getY()) {
-				setY(getY() + speed / 2);
+		double slope = Math.tan((getX() - cubeX)/(getY() - cubeY));
+		if(calcDistance(cubeX, cubeY) < threshold) {
+			speed += 0.1;
+
+			double direction = Math.atan2(getY() - cubeY, getX() - cubeX);
+
+			setX(getX() - Math.cos(direction) * speed);
+			setY(getY() - Math.sin(direction) * speed);
+
+			if (speed > 4.5) {
+				speed = 4.5;
 			}
 
 			// This can be shrunk with math
 			// But for now
 
 			// I will allow it
+		} else {
+			speed = 0;
 		}
 	}
 
