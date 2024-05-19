@@ -84,6 +84,9 @@ public class GlowAnimation extends JPanel {
                 drawFlares();
 
                 g.setColor(Color.RED);
+                if(distance(cube.getX(), cube.getY(), theVoid.getX(), theVoid.getY()) <= 5) {
+                	scene = "game over";
+                }
             }
             else if(scene.equals("menu")) {
                 drawMenu(g);
