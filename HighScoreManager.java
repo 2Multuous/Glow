@@ -10,7 +10,7 @@ public class HighScoreManager {
 		File highScore = new File("highscore.txt");
 		try {
 			FileWriter f = new FileWriter("highscore.txt");
-			f.write(0);
+			f.write('0');
 			return "highscore.txt";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -42,7 +42,10 @@ public class HighScoreManager {
 	public static void writeScore(int score) {
 		try {
 			FileWriter f = new FileWriter(createFile());
-			f.write(score);
+			String s = "" + score;
+			for(char c : s.toCharArray()) {
+				f.write(c);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
