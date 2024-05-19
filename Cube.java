@@ -2,28 +2,19 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Cube extends GameObject {
-    private final int WIDTH;
-    private final int HEIGHT;
-
     private int numFlares;
 
-    public Cube(double x, double y, double direction, double width, Color color, int WIDTH, int HEIGHT) {
+    public Cube(double x, double y, double direction, double width, Color color) {
         setX(x);
         setY(y);
         setDirection(direction);
         setWidth(width);
         setColor(color);
 
-        this.WIDTH = WIDTH;
-        this.HEIGHT = HEIGHT;
-
         numFlares = 0;
     }
 
-    public Cube(double width, int WIDTH, int HEIGHT) {
-        this.WIDTH = WIDTH;
-        this.HEIGHT = HEIGHT;
-
+    public Cube(double width) {
         setX(0);
         setY(0);
         setWidth(width);
@@ -36,9 +27,9 @@ public class Cube extends GameObject {
         g2d.setColor(getColor()); // Color: 5, 252, 248 ?
         AffineTransform old = g2d.getTransform();
 
-        Rectangle rect = new Rectangle((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
+        Rectangle rect = new Rectangle((int)(GlowAnimation.WIDTH/2 - getWidth()/2), (int)(GlowAnimation.HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
 
-        g2d.rotate(-Math.atan2(mouseY, mouseX), (double)WIDTH/2, (double)HEIGHT/2);
+        g2d.rotate(-Math.atan2(mouseY, mouseX), (double)GlowAnimation.WIDTH/2, (double)GlowAnimation.HEIGHT/2);
 
         g2d.draw(rect);
         g2d.fill(rect);
@@ -52,6 +43,7 @@ public class Cube extends GameObject {
         if (mouseDown) {
             setX(getX() + Math.cos(getDirection()) * 10);
             setY(super.getY() - Math.sin(getDirection()) * 10);
+            System.out.println((int)getX() + ", " + (int)super.getY());
         }
     }
 
