@@ -8,7 +8,7 @@ public class Void extends GameObject {
         setY(-y);
         setWidth(width);
         this.speed = speed;
-        setColor(Color.DARK_GRAY);
+        setColor(Color.BLACK);
     }
 
     public void drawVoid(double cubeX, double cubeY, double flareX, double flareY, boolean isFollowingFlare, double cubeSpeed, Graphics g) {
@@ -28,9 +28,9 @@ public class Void extends GameObject {
 
     public void move(double cubeX, double cubeY, double flareX, double flareY, boolean isFollowingFlare, double cubeSpeed) {
         if (isFollowingFlare) {
-            speed = cubeSpeed * 1.2;
+            speed = cubeSpeed * 2;
             if (cubeSpeed < 1) {
-                speed = 1;
+                speed = 2;
             }
 
             setDirection(Math.atan2(getY() - flareY, getX() - flareX));
