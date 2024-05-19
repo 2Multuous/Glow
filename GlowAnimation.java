@@ -67,7 +67,7 @@ public class GlowAnimation extends JPanel {
         setFocusable(true);
         this.addKeyListener(input);
 
-        HighScoreManager.createFile();
+     //   HighScoreManager.createFile();
     }
 
     private class TimerListener implements ActionListener {
@@ -250,8 +250,7 @@ public class GlowAnimation extends JPanel {
         g.drawString("GAME OVER", HEIGHT / 2 - 300, 200);
         g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
         g.drawString("Score: " + (int) (cube.getWidth()), 100, 300);
-        g.drawString("High Score: " + HighScoreManager.getScore(), 100, 400);
-        g.drawString("Press [p] to play again", 100, 500);
+        g.drawString("Press [p] to play again", 100, 400);
     }
 
 
