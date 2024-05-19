@@ -53,7 +53,6 @@ public class Cube extends GameObject {
         }
         setX(getX() + Math.cos(getDirection()) * speed);
         setY(super.getY() - Math.sin(getDirection()) * speed);
-        System.out.println((int)getX() + ", " + (int)super.getY());
     }
 
     public void grow(int widthAdded) {
