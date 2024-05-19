@@ -12,7 +12,7 @@ public class Void extends GameObject {
 
     public Void(double x, double y, double width, double speed, int WIDTH, int HEIGHT) {
         setX(x);
-        setY(y);
+        setY(-y);
         setWidth(width);
         this.speed = speed;
 
