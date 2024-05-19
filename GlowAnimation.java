@@ -7,8 +7,8 @@ import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class GlowAnimation extends JPanel {
-    private static final int WIDTH = 1920;
-    private static final int HEIGHT = 1080;
+    public static final int WIDTH = 1920;
+    public static final int HEIGHT = 1080;
 
     // required global variables
     private BufferedImage image;
@@ -17,16 +17,19 @@ public class GlowAnimation extends JPanel {
 
     private GameObject obj;
     private String string;
-    private ArrayList<GameObject> objects;
+    private ArrayList<Firefly> fireflies;
+    private ArrayList<FlareFly> flareflies;
+    private ArrayList<Wisp> wisps;
+    private ArrayList<Flare> flares;
+    private Firefly f;
     private Cube cube;
     private int mouseX;
     private int mouseY;
     private boolean mouseDown;
     private Mouse mouse;
     private Beam beam;
-    private Firefly f;
     private String scene;
-	private Input input;
+    private Input input;
 
     // Constructor required by BufferedImage
     public GlowAnimation() {
@@ -36,20 +39,24 @@ public class GlowAnimation extends JPanel {
 
         scene = "menu";
 
-        objects = new ArrayList<GameObject>();
+        fireflies = new ArrayList<>();
+        flareflies = new ArrayList<>();
+        wisps = new ArrayList<>();
+        flares = new ArrayList<>();
+
         mouseX = 0;
         mouseY = 0;
 
-        cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248), WIDTH, HEIGHT);
-        beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60), WIDTH, HEIGHT);
+        cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248));
+        beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60));
 
         for (int i = 0; i < 100; i++) {
-            objects.add(new Firefly((int)(Math.random() * 10000 + 1000), (int)(Math.random() * 10000 + 1000), 5, 5));
+            int r = (int)(Math.random() * WIDTH/2);
+            double theta = Math.random() * Math.PI * 2;
+            fireflies.add(new Firefly((int)(r * Math.cos(theta)), (int)(r * Math.sin(theta)), 5, 5));
         }
 
-        for (int i = 0; i < 200; i++) {
-            objects.add(new Firefly((int)(Math.random() * WIDTH), -(int)(Math.random() * (HEIGHT)), 5, 5));
-        }
+        f = new Firefly(200, 200, 5, 5);
 
         timer = new Timer(10, new TimerListener());
         timer.start();
@@ -58,7 +65,7 @@ public class GlowAnimation extends JPanel {
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
 
-	input = new Input();
+        input = new Input();
         setFocusable(true);
         this.addKeyListener(input);
     }
@@ -68,33 +75,35 @@ public class GlowAnimation extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if(scene.equals("game")) {
                 background(g);
-    
+
                 beam.setDirection(cube.getDirection());
                 beam.setWidth(cube.getWidth());
                 beam.draw(g);
                 cube.drawCube(mouseX, mouseY, mouseDown, g);
-    
-                for (GameObject object : objects) {
-    //                if (isInBeam(object)) {
-    //                    object.draw(cube.getX(), cube.getY(), g);
-    ////                    glowEffect(object, 10, 4, 40);
-    //                }
-                    if (isInBeam(object)) {
-                        object.draw(cube.getX(), cube.getY(), g);
+
+                for (Firefly firefly : fireflies) {
+                    //                if (isInBeam(object)) {
+                    //                    object.draw(cube.getX(), cube.getY(), g);
+                    ////                    glowEffect(object, 10, 4, 40);
+                    //                }
+                    if (isInBeam(firefly)) {
+                        firefly.draw(cube.getX(), cube.getY(), g);
                     }
                 }
-    
+
+                f.draw(cube.getX(), cube.getY(), g);
+
                 g.setColor(Color.RED);
             }
             else if(scene.equals("menu")) {
-        		drawMenu(g);
-        	}
-        	else if(scene.equals("intro")) {
-        		drawIntro(g);
-        	}
-		else if(scene.equals("pause")) {
-        		drawPause(g);
-        	}
+                drawMenu(g);
+            }
+            else if(scene.equals("intro")) {
+                drawIntro(g);
+            }
+            else if(scene.equals("pause")) {
+                drawPause(g);
+            }
             repaint();
         }
     }
@@ -105,11 +114,11 @@ public class GlowAnimation extends JPanel {
             double x = 0;
             double y = 0;
             if (cube.getDirection() > -Math.PI/2 && cube.getDirection() < Math.PI/2) {
-                x = (double)WIDTH/2 + i + cube.getX();
-                y = (double)HEIGHT/2 + slope * i + cube.getY();
+                x = i + cube.getX();
+                y = slope * i + cube.getY();
             } else {
-                x = (double)WIDTH/2 - i + cube.getX();
-                y = (double)HEIGHT/2 - slope * i + cube.getY();
+                x = -(i + cube.getX());
+                y = -(slope * i + cube.getY());
             }
             if (Math.hypot(object.getX() - x, object.getY() - y) < beam.getWidth()/2) {
                 return true;
@@ -159,77 +168,77 @@ public class GlowAnimation extends JPanel {
 
     //ben was here
 
-     // using this to manage intro stuff and pause menu
+    // using this to manage intro stuff and pause menu
     private class Input implements KeyListener {
 
-		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+        @Override
+        public void keyTyped(KeyEvent e) {
+            // TODO Auto-generated method stub
 
-		@Override
-		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
-			System.out.println("Key pressed " + e.getKeyCode());
-			if(scene.equals("menu")) {
-				if(e.getKeyCode() == 80) {
-					scene = "intro";
-				}
-			}
-			else if(scene.equals("intro")) {
-				if(e.getKeyCode() == 67) {
-					scene = "game";
-				}
-			}
-			else if(scene.equals("game")) {
-				if(e.getKeyCode() == 80) {
-					scene = "pause";
-				}
-			}
-			else if(scene.equals("pause")) {
-				if(e.getKeyCode() == 80) {
-					scene = "game";
-				}
-			}
-		}
+        }
 
-		@Override
-		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-    	
+        @Override
+        public void keyPressed(KeyEvent e) {
+            // TODO Auto-generated method stub
+            System.out.println("Key pressed " + e.getKeyCode());
+            if(scene.equals("menu")) {
+                if(e.getKeyCode() == 80) {
+                    scene = "intro";
+                }
+            }
+            else if(scene.equals("intro")) {
+                if(e.getKeyCode() == 67) {
+                    scene = "game";
+                }
+            }
+            else if(scene.equals("game")) {
+                if(e.getKeyCode() == 80) {
+                    scene = "pause";
+                }
+            }
+            else if(scene.equals("pause")) {
+                if(e.getKeyCode() == 80) {
+                    scene = "game";
+                }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 
     public static void drawMenu(Graphics g) {
-    	background(g);
-    	g.setColor(Color.WHITE);
-    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
-    	g.drawString("GLOW", HEIGHT / 2 + 25, 400);
-    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-    	g.drawString("Press [p] to play", HEIGHT / 2 + 85, 600);
+        background(g);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
+        g.drawString("GLOW", HEIGHT / 2 + 25, 400);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+        g.drawString("Press [p] to play", HEIGHT / 2 + 85, 600);
     }
 
     public static void drawIntro(Graphics g) {
-    	background(g);
-    	g.setColor(Color.WHITE);
-    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-    	g.drawString("Controls:", 100, 200);
-    	g.drawString("Left click to move", 100, 300);
-    	g.drawString("The player will move in the direction", 100, 400);
-    	g.drawString("of the cursor", 100, 500);
-    	g.drawString("press [p] to pause", 100, 600);
-    	g.drawString("press [c] to continue", 100, 700);
+        background(g);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+        g.drawString("Controls:", 100, 200);
+        g.drawString("Left click to move", 100, 300);
+        g.drawString("The player will move in the direction", 100, 400);
+        g.drawString("of the cursor", 100, 500);
+        g.drawString("press [p] to pause", 100, 600);
+        g.drawString("press [c] to continue", 100, 700);
     }
 
     public static void drawPause(Graphics g) {
-    	background(g);
-    	g.setColor(Color.WHITE);
-    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
-    	g.drawString("PAUSED", HEIGHT / 2 - 70, 400);
-    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-    	g.drawString("Press [p] to resume", HEIGHT / 2 + 55, 600);
+        background(g);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
+        g.drawString("PAUSED", HEIGHT / 2 - 70, 400);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+        g.drawString("Press [p] to resume", HEIGHT / 2 + 55, 600);
     }
 
 //    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
