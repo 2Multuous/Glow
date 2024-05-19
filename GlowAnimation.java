@@ -43,6 +43,10 @@ public class GlowAnimation extends JPanel {
             objects.add(new Firefly((int)(Math.random() * 10000 + 1000), (int)(Math.random() * 10000 + 1000), 5, 5));
         }
 
+        for (int i = 0; i < 200; i++) {
+            objects.add(new Firefly((int)(Math.random() * WIDTH), -(int)(Math.random() * (HEIGHT)), 5, 5));
+        }
+
         timer = new Timer(10, new TimerListener());
         timer.start();
 
@@ -62,13 +66,38 @@ public class GlowAnimation extends JPanel {
             cube.drawCube(mouseX, mouseY, mouseDown, g);
 
             for (GameObject object : objects) {
-                object.draw(cube.getX(), cube.getY(), g);
+//                if (isInBeam(object)) {
+//                    object.draw(cube.getX(), cube.getY(), g);
+////                    glowEffect(object, 10, 4, 40);
+//                }
+                if (isInBeam(object)) {
+                    object.draw(cube.getX(), cube.getY(), g);
+                }
             }
 
             g.setColor(Color.RED);
 
             repaint();
         }
+    }
+
+    public boolean isInBeam(GameObject object) {
+        double slope = Math.tan(cube.getDirection());
+        for (int i = 0; i < WIDTH/2; i++) {
+            double x = 0;
+            double y = 0;
+            if (cube.getDirection() > -Math.PI/2 && cube.getDirection() < Math.PI/2) {
+                x = (double)WIDTH/2 + i + cube.getX();
+                y = (double)HEIGHT/2 + slope * i + cube.getY();
+            } else {
+                x = (double)WIDTH/2 - i + cube.getX();
+                y = (double)HEIGHT/2 - slope * i + cube.getY();
+            }
+            if (Math.hypot(object.getX() - x, object.getY() - y) < beam.getWidth()/2) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private class Mouse implements MouseListener, MouseMotionListener {
@@ -112,16 +141,16 @@ public class GlowAnimation extends JPanel {
 
     //ben was here
 
-    public void glowEffect(GameObject o, int intensity, int levels, int radius, Graphics g) {
-        Color color = new Color(o.getColor().getRGB());
-        int red = color.getRed();
-        int green = color.getGreen();
-        int blue = color.getBlue();
-        for (int i = 1; i < levels + 1; i++) {
-            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
-            g.fillOval((int) (o.getX() - radius / levels * i), (int) (o.getY() - radius / levels * i), (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
-        }
-    }
+//    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
+//        Color color = new Color(o.getColor().getRGB());
+//        int red = color.getRed();
+//        int green = color.getGreen();
+//        int blue = color.getBlue();
+//        for (int i = 1; i < levels + 1; i++) {
+//            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
+//            g.fillOval((int) (o.getX() - radius / levels * i), (int) (o.getY() - radius / levels * i), (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
+//        }
+//    }
 
 
     public static void background(Graphics g) {
