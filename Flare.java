@@ -5,7 +5,7 @@ public class Flare extends GameObject {
 
     public Flare(int x, int y) {
         setX(x);
-        setY(y);
+        setY(-y);
         setWidth(4);
         consumed = false;
     }
