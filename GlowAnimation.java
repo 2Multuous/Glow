@@ -19,6 +19,7 @@ public class GlowAnimation extends JPanel {
     private ArrayList<FlareFly> flareflies;
     private ArrayList<Wisp> wisps;
     private ArrayList<Flare> flares;
+    private ArrayList<Spark> sparks = new ArrayList<Spark>();
 
     private Cube cube;
     private Beam beam;
@@ -49,6 +50,8 @@ public class GlowAnimation extends JPanel {
         wisps = new ArrayList<>();
         flares = new ArrayList<>();
 
+        createSparks();
+
         cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248));
         beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60));
         theVoid = new Void(-1000, 0, 200, 7.4);
@@ -72,6 +75,8 @@ public class GlowAnimation extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if(scene.equals("game")) {
                 background(g);
+
+                drawSparks();
 
                 drawCharacter();
 
@@ -101,6 +106,26 @@ public class GlowAnimation extends JPanel {
             	drawGameOver(g);
             }
             repaint();
+        }
+    }
+
+    // Sparks
+    public void drawSparks() {
+            for (int i = sparks.size() - 1; i >= 0; i--) {
+                if (sparks.get(i).getTime() <= 0) {
+                    sparks.remove(i);
+                    sparks.add(new Spark((int) (Math.random() * 100 - 50) + WIDTH / 2, (int) (Math.random() * 100 - 50) + HEIGHT / 2));
+                }
+
+                sparks.get(i).draw((int) cube.getX(), (int) cube.getY(), g);
+                glowEffect(sparks.get(i), 2, 10, 10);
+                sparks.get(i).move();
+            }
+    }
+
+    public void createSparks() {
+        for (int i = 0; i < 1000; i++) {
+            sparks.add(new Spark((int) (Math.random() * 100 - 50) + WIDTH / 2, (int) (Math.random() * 100 - 50) + HEIGHT / 2));
         }
     }
 
@@ -263,16 +288,16 @@ public class GlowAnimation extends JPanel {
         return Math.hypot(x2 - x1, y2 - y1);
     }
 
-//    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
-//        Color color = new Color(o.getColor().getRGB());
-//        int red = color.getRed();
-//        int green = color.getGreen();
-//        int blue = color.getBlue();
-//        for (int i = 1; i < levels + 1; i++) {
-//            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
-//            g.fillOval((int) (o.getX() - radius / levels * i), (int) (o.getY() - radius / levels * i), (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
-//        }
-//    }
+    public void glowEffect(Spark o, int intensity, int levels, int radius) {
+        Color color = new Color(o.getColor().getRGB());
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        for (int i = 1; i < levels + 1; i++) {
+            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
+            g.fillOval((int) (o.getX() - radius / levels * i) - (int) cube.getX() - 1, (int) (o.getY() - radius / levels * i) - (int) cube.getY() - 1, (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
+        }
+    }
 
     // Listeners and stuff
     private class Mouse implements MouseListener, MouseMotionListener {
