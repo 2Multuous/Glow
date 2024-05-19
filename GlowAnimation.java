@@ -26,6 +26,7 @@ public class GlowAnimation extends JPanel {
     private Beam beam;
     private Firefly f;
     private String scene;
+	private Input input;
 
     // Constructor required by BufferedImage
     public GlowAnimation() {
@@ -56,6 +57,10 @@ public class GlowAnimation extends JPanel {
         mouse = new Mouse();
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
+
+	input = new Input();
+        setFocusable(true);
+        this.addKeyListener(input);
     }
 
     private class TimerListener implements ActionListener {
