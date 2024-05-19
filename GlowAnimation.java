@@ -118,8 +118,8 @@ public class GlowAnimation extends JPanel {
         int green = color.getGreen();
         int blue = color.getBlue();
         for (int i = 1; i < levels + 1; i++) {
-            g.setColor(new Color(red, green, blue, intensity));
-            g.fillOval((int) (o.getX() - radius), (int) (o.getY() - radius), (int) (o.getWidth() + (radius * 2)), (int) (o.getHeight() + (radius * 2)));
+            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
+            g.fillOval((int) (o.getX() - radius / levels * i), (int) (o.getY() - radius / levels * i), (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
         }
     }
 
