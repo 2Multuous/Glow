@@ -1,23 +1,17 @@
 import java.awt.*;
 
 public class Void extends GameObject {
-    private final int WIDTH;
-    private final int HEIGHT;
-
     private boolean followingFlare;
     private double speed;
 
     private double goalX;
     private double goalY;
 
-    public Void(double x, double y, double width, double speed, int WIDTH, int HEIGHT) {
+    public Void(double x, double y, double width, double speed) {
         setX(x);
         setY(-y);
         setWidth(width);
         this.speed = speed;
-
-        this.WIDTH = WIDTH;
-        this.HEIGHT = HEIGHT;
     }
 
     public void draw(double cubeX, double cubeY, Graphics g) {
@@ -27,7 +21,7 @@ public class Void extends GameObject {
         move();
 
         g.setColor(getColor());
-        g.drawOval((int)(getX() - cubeX), (int)(getY() - cubeY), (int)getWidth(), (int)getWidth());
+        g.drawOval((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH), (int)(getY() - cubeY - getWidth()/2 + GlowAnimation.HEIGHT), (int)getWidth(), (int)getWidth());
     }
 
     public void move() {
