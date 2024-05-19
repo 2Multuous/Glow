@@ -32,6 +32,8 @@ public class GlowAnimation extends JPanel {
         image =  new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         g = image.getGraphics();
 
+        scene = "menu";
+
         objects = new ArrayList<GameObject>();
         mouseX = 0;
         mouseY = 0;
@@ -58,25 +60,32 @@ public class GlowAnimation extends JPanel {
     private class TimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            background(g);
-
-            beam.setDirection(cube.getDirection());
-            beam.setWidth(cube.getWidth());
-            beam.draw(g);
-            cube.drawCube(mouseX, mouseY, mouseDown, g);
-
-            for (GameObject object : objects) {
-//                if (isInBeam(object)) {
-//                    object.draw(cube.getX(), cube.getY(), g);
-////                    glowEffect(object, 10, 4, 40);
-//                }
-                if (isInBeam(object)) {
-                    object.draw(cube.getX(), cube.getY(), g);
+            if(scene.equals("game")) {
+                background(g);
+    
+                beam.setDirection(cube.getDirection());
+                beam.setWidth(cube.getWidth());
+                beam.draw(g);
+                cube.drawCube(mouseX, mouseY, mouseDown, g);
+    
+                for (GameObject object : objects) {
+    //                if (isInBeam(object)) {
+    //                    object.draw(cube.getX(), cube.getY(), g);
+    ////                    glowEffect(object, 10, 4, 40);
+    //                }
+                    if (isInBeam(object)) {
+                        object.draw(cube.getX(), cube.getY(), g);
+                    }
                 }
+    
+                g.setColor(Color.RED);
             }
-
-            g.setColor(Color.RED);
-
+            else if(scene.equals("menu")) {
+        		drawMenu(g);
+        	}
+        	else if(scene.equals("intro")) {
+        		drawIntro(g);
+        	}
             repaint();
         }
     }
@@ -140,6 +149,60 @@ public class GlowAnimation extends JPanel {
     }
 
     //ben was here
+
+     // using this to manage intro stuff and pause menu
+    private class Input implements KeyListener {
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			// TODO Auto-generated method stub
+			System.out.println("Key pressed " + e.getKeyCode());
+			if(scene.equals("menu")) {
+				if(e.getKeyCode() == 80) {
+					scene = "intro";
+				}
+			}
+			else if(scene.equals("intro")) {
+				if(e.getKeyCode() == 67) {
+					scene = "game";
+				}
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+    	
+    }
+
+    public static void drawMenu(Graphics g) {
+    	background(g);
+    	g.setColor(Color.WHITE);
+    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
+    	g.drawString("GLOW", HEIGHT / 2 + 25, 400);
+    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+    	g.drawString("Press [p] to play", HEIGHT / 2 + 85, 600);
+    }
+
+    public static void drawIntro(Graphics g) {
+    	background(g);
+    	g.setColor(Color.WHITE);
+    	g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+    	g.drawString("Controls:", 100, 200);
+    	g.drawString("Left click to move", 100, 300);
+    	g.drawString("The player will move in the direction", 100, 400);
+    	g.drawString("of the cursor", 100, 500);
+    	g.drawString("press [p] to pause", 100, 600);
+    	g.drawString("press [c] to continue", 100, 700);
+    }
 
 //    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
 //        Color color = new Color(o.getColor().getRGB());
