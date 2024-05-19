@@ -85,13 +85,13 @@ public class GlowAnimation extends JPanel {
                 cube.drawCube(mouseX, mouseY, mouseDown, g);
                 for (int i = 0; i < 10; i++) {
                     g.setColor(new Color(0, 255, 246, i));
-                    g.fillOval(WIDTH/2 - i * 10, HEIGHT/2 - i * 10, i * 2 * 10, i * 2 * 10);
+                    g.fillOval((int)(WIDTH/2 - i * cube.getWidth()/2), (int)(HEIGHT/2 - i * cube.getWidth()/2), (int)(i * cube.getWidth()), (int)(i * cube.getWidth()));
                 }
 
                 // Fireflies
                 int r = (int)(Math.random() * 10000 + WIDTH/2);
                 double theta = Math.random() * Math.PI * 2;
-                if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 2000, new ArrayList<GameObject>(fireflies))) {
+                if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 3000, new ArrayList<GameObject>(fireflies))) {
                     fireflies.add(new Firefly((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
                 }
 
@@ -111,6 +111,28 @@ public class GlowAnimation extends JPanel {
                     }
                 }
 
+                // Wisps
+                r = (int)(Math.random() * 10000 + WIDTH/2);
+                theta = Math.random() * Math.PI * 2;
+                if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 3000, new ArrayList<GameObject>(wisps))) {
+                    wisps.add(new Wisp((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
+                }
+
+                for (int i = wisps.size() - 1; i >= 0; i--) {
+                    if (isInBeam(wisps.get(i))  || distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) < 5 * cube.getWidth() || drawAll) {
+                        wisps.get(i).draw(cube.getX(), cube.getY(), g);
+                    }
+                    if (distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) > WIDTH) {
+                        wisps.remove(i);
+                    }
+                }
+
+                for (int i = wisps.size() - 1; i >= 0; i--) {
+                    if (distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) < cube.getWidth() - wisps.get(i).getWidth()) {
+                        wisps.remove(i);
+                        cube.shrink(2);
+                    }
+                }
 
                 g.setColor(Color.RED);
             }
@@ -130,7 +152,6 @@ public class GlowAnimation extends JPanel {
     public boolean hasSpaceAmongObjects(double x, double y, double radius, ArrayList<GameObject> objects) {
         for (GameObject object : objects) {
             if (distance(x, y, object.getX(), object.getY()) < radius) {
-                System.out.println("nope");
                 return false;
             }
         }
