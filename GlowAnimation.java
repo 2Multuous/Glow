@@ -19,7 +19,7 @@ public class GlowAnimation extends JPanel {
     private ArrayList<FlareFly> flareflies;
     private ArrayList<Wisp> wisps;
     private ArrayList<Flare> flares;
-    private ArrayList<Spark> sparks = new ArrayList<Spark>();
+    private ArrayList<Spark> sparks;
 
     private Cube cube;
     private Beam beam;
@@ -49,7 +49,7 @@ public class GlowAnimation extends JPanel {
         flareflies = new ArrayList<>();
         wisps = new ArrayList<>();
         flares = new ArrayList<>();
-
+        sparks = new ArrayList<Spark>();
         createSparks();
 
         cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248));
