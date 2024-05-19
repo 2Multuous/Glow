@@ -16,6 +16,9 @@ public class Beam {
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke((int)width));
         g2d.drawLine(GlowAnimation.WIDTH/2, GlowAnimation.HEIGHT/2, (int)(GlowAnimation.WIDTH/2 + 2000 * Math.cos(direction)), (int)(GlowAnimation.HEIGHT/2 + 2000 * Math.sin(direction)));
+        g2d.setColor(color.brighter());
+        g2d.setStroke(new BasicStroke((int)width / 2));
+        g2d.drawLine(GlowAnimation.WIDTH/2, GlowAnimation.HEIGHT/2, (int)(GlowAnimation.WIDTH/2 + 2000 * Math.cos(direction)), (int)(GlowAnimation.HEIGHT/2 + 2000 * Math.sin(direction)));
         g2d.setStroke(new BasicStroke(1));
 
         // Cool looking but non-revealing beam
