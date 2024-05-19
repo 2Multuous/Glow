@@ -14,7 +14,6 @@ public class Wisp extends Firefly{
 
 	public Wisp(double x, double y, double width, double height) {
 		super(x, y, width, height);
-		//TODO balance change these values
 		setThreshold(50);
 		setSpeed(2);
 	}
@@ -28,10 +27,12 @@ public class Wisp extends Firefly{
 
 	@Override
 	public void draw(double cubeX, double cubeY, Graphics g) {
+		move(cubeX, cubeY);
+
 		double percentage = calcDistance(cubeX, cubeY) / threshold;
 		setColor(new Color(255, (int) (255 * percentage), 0));
 		g.setColor(getColor());
-		g.fillRect((int)(getX()), (int) (getY()), (int) (getWidth()), (int) (getHeight()));
+		g.fillRect((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH), (int) (getY()), (int) (getWidth() - cubeY - getHeight()/2 + GlowAnimation.HEIGHT), (int) (getHeight()));
 	}
 	
 	public void move(double cubeX, double cubeY) {
@@ -48,6 +49,11 @@ public class Wisp extends Firefly{
 			else if(cubeY < getY()) {
 				setY(getY() - speed / 2);
 			}
+
+			// This can be shrunk with math
+			// But for now
+
+			// I will allow it
 		}
 	}
 
