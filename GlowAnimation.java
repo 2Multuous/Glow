@@ -23,6 +23,8 @@ public class GlowAnimation extends JPanel {
     private int mouseY;
     private boolean mouseDown;
     private Mouse mouse;
+    private Beam beam;
+    private Firefly f;
 
     //Constructor required by BufferedImage
     public GlowAnimation() {
@@ -34,7 +36,9 @@ public class GlowAnimation extends JPanel {
         mouseX = 0;
         mouseY = 0;
 
-        cube = new Cube(0, 0, 0.0, 50, new Color(5, 252, 248), WIDTH, HEIGHT);
+        cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248), WIDTH, HEIGHT);
+        beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60), WIDTH, HEIGHT);
+        f = new Firefly(200, 200, 5, 5);
 
         for (int i = 0; i < 100; i++) {
             objects.add(new Firefly((int)(Math.random() * 10000 + 1000), (int)(Math.random() * 10000 + 1000), 5, 5));
@@ -55,31 +59,34 @@ public class GlowAnimation extends JPanel {
         public void actionPerformed(ActionEvent e) {
             background(g);
 
-            //update positions of objects
-            for (int i = 0; i < objects.size(); i++) {
-                objects.get(i).setX(objects.get(i).getX());
-            }
-
+            beam.setDirection(cube.getDirection());
+            beam.setWidth(cube.getWidth());
+            beam.draw(g);
             cube.drawCube(mouseX, mouseY, mouseDown, g);
 
             for (GameObject object : objects) {
-                object.draw(cube.getX(), cube.getY(), g);
+                if (isInBeam(object)) {
+                    object.draw(cube.getX(), cube.getY(), g);
+                }
+            }
+
+            if (isInBeam(f)) {
+                f.draw(cube.getX(), cube.getY(), g);
             }
 
             g.setColor(Color.RED);
 
             repaint(); //leave this alone, it MUST  be the last thing in this method
         }
-
     }
 
-//    private void getMousePos() {
-//        mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX() - WIDTH/2;
-//        mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY() - HEIGHT/2;
-//    }
+    public boolean isInBeam(GameObject object) {
+        double angle = Math.atan2(object.getY() - cube.getY(), object.getX() - cube.getX()) + Math.PI/2;
+        System.out.println(angle + " / " + cube.getDirection());
+        return angle < beam.getDirection() + Math.PI/12 && angle > beam.getDirection() - Math.PI/12;
+    }
 
     private class Mouse implements MouseListener, MouseMotionListener {
-
         @Override
         public void mouseClicked(MouseEvent e) {
 
@@ -107,7 +114,8 @@ public class GlowAnimation extends JPanel {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-
+            mouseX = e.getX() - WIDTH/2;
+            mouseY = e.getY() - HEIGHT/2;
         }
 
         @Override
@@ -134,7 +142,7 @@ public class GlowAnimation extends JPanel {
     public static void background(Graphics g) {
         Graphics2D g2D = (Graphics2D) g;
 
-        g2D.setPaint (new Color(0, 0, 0, 90));
+        g2D.setPaint (new Color(0, 0, 0));
         g2D.fillRect(0, 0, WIDTH, HEIGHT);
     }
 
