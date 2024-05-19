@@ -21,7 +21,8 @@ public class Beam {
 
         g2d.setColor(color);
         g2d.setStroke(new BasicStroke((int)width));
-        g2d.drawLine(WIDTH/2, HEIGHT/2, (int)(WIDTH/2 + 2000 * Math.cos(Math.toRadians(direction))), (int)(HEIGHT/2 + 2000 * Math.sin(Math.toRadians(direction))));
+        g2d.drawLine(WIDTH/2, HEIGHT/2, (int)(WIDTH/2 + 2000 * Math.cos(direction)), (int)(HEIGHT/2 + 2000 * Math.sin(direction)));
+        g2d.setStroke(new BasicStroke(1));
     }
 
     public double getDirection() {
