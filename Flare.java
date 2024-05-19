@@ -13,7 +13,7 @@ public class Flare extends GameObject {
     @Override
     public void draw(double cubeX, double cubeY, Graphics g) {
         g.setColor(getColor());
-        g.drawRect((int)(getX() - cubeX - getWidth()/2), (int)(getY() - cubeY - getWidth()/2), (int)getWidth(), (int)getWidth());
+        g.drawRect((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH/2), (int)(getY() - cubeY - getWidth()/2 + GlowAnimation.HEIGHT/2), (int)getWidth(), (int)getWidth());
     }
 
     public void consume() {
