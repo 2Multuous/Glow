@@ -10,13 +10,15 @@ public class FlareFly extends Firefly {
 	}
 	
 	public void draw(double cubeX, double cubeY, Graphics g) {
-		if(calcDistance(cubeX, cubeY) < 10) {
-			setConsumed(true);
-			setColor(Color.BLACK);
-		}
-		else if(!isConsumed()){
-			g.fillRect((int) getX(), (int) getY(), (int) getWidth(), (int) getHeight());
-		}
+//		if(calcDistance(cubeX, cubeY) < 10) {
+//			setConsumed(true);
+//			setColor(Color.BLACK);
+//		}
+//		else if(!isConsumed()){
+		g.fillRect((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH), (int)(getY() - cubeY - getHeight()/2 + GlowAnimation.HEIGHT), (int)getWidth(), (int)getHeight());
+//		}
+
+		// This will probably be handled in GlowAnimation
 	}
 	
 	public double calcDistance(double cubeX, double cubeY) {
