@@ -3,6 +3,7 @@ import java.awt.geom.AffineTransform;
 
 public class Cube extends GameObject {
     private int numFlares;
+    private boolean isFlareActive;
 
     private double speed;
 
@@ -74,6 +75,22 @@ public class Cube extends GameObject {
     @Override
     public double getY() {
         return -super.getY();
+    }
+
+    public boolean isFlareActive() {
+        return isFlareActive;
+    }
+
+    public void setFlareActive(boolean flareActive) {
+        isFlareActive = flareActive;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     // Dummy method
