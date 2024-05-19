@@ -4,6 +4,8 @@ import java.awt.geom.AffineTransform;
 public class Cube extends GameObject {
     private int numFlares;
 
+    private double speed;
+
     public Cube(double x, double y, double direction, double width, Color color) {
         setX(x);
         setY(y);
@@ -12,6 +14,7 @@ public class Cube extends GameObject {
         setColor(color);
 
         numFlares = 0;
+        speed = 4;
     }
 
     public Cube(double width) {
@@ -41,10 +44,16 @@ public class Cube extends GameObject {
         setDirection(-Math.atan2(mouseY, mouseX));
 
         if (mouseDown) {
-            setX(getX() + Math.cos(getDirection()) * 10);
-            setY(super.getY() - Math.sin(getDirection()) * 10);
-            System.out.println((int)getX() + ", " + (int)super.getY());
+            speed += 0.4;
+            if (speed > 7) {
+                speed = 7;
+            }
+        } else {
+            speed *= 0.79;
         }
+        setX(getX() + Math.cos(getDirection()) * speed);
+        setY(super.getY() - Math.sin(getDirection()) * speed);
+        System.out.println((int)getX() + ", " + (int)super.getY());
     }
 
     public void grow(int widthAdded) {
