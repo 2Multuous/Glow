@@ -15,18 +15,19 @@ public class GlowAnimation extends JPanel {
     private Graphics g;
     private Timer timer;
 
-    private GameObject obj;
-    private String string;
     private ArrayList<Firefly> fireflies;
     private ArrayList<FlareFly> flareflies;
     private ArrayList<Wisp> wisps;
     private ArrayList<Flare> flares;
+
     private Cube cube;
+    private Beam beam;
+    private Void theVoid;
+
     private int mouseX;
     private int mouseY;
     private boolean mouseDown;
     private Mouse mouse;
-    private Beam beam;
     private String scene;
     private Input input;
 
@@ -40,23 +41,17 @@ public class GlowAnimation extends JPanel {
         g = image.getGraphics();
 
         scene = "menu";
+        mouseX = 0;
+        mouseY = 0;
 
         fireflies = new ArrayList<>();
         flareflies = new ArrayList<>();
         wisps = new ArrayList<>();
         flares = new ArrayList<>();
 
-        mouseX = 0;
-        mouseY = 0;
-
         cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248));
         beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60));
-
-//        for (int i = 0; i < 100; i++) {
-//            int r = (int)(Math.random() * 10000 + WIDTH/2);
-//            double theta = Math.random() * Math.PI * 2;
-//            fireflies.add(new Firefly((int)(r * Math.cos(theta)), (int)(r * Math.sin(theta)), 5, 5));
-//        }
+        theVoid = new Void(-1000, 0, 200, 7.4);
 
         timer = new Timer(10, new TimerListener());
         timer.start();
@@ -68,8 +63,6 @@ public class GlowAnimation extends JPanel {
         input = new Input();
         setFocusable(true);
         this.addKeyListener(input);
-
-        HighScoreManager.createFile();
     }
 
     private class TimerListener implements ActionListener {
@@ -78,63 +71,15 @@ public class GlowAnimation extends JPanel {
             if(scene.equals("game")) {
                 background(g);
 
-                // Beam
-                beam.setDirection(cube.getDirection());
-                beam.setWidth(cube.getWidth());
-                beam.draw(g);
+                drawCharacter();
 
-                // Cube
-                cube.drawCube(mouseX, mouseY, mouseDown, g);
-                for (int i = 0; i < 10; i++) {
-                    g.setColor(new Color(0, 255, 246, i));
-                    g.fillOval((int)(WIDTH/2 - i * cube.getWidth()/2), (int)(HEIGHT/2 - i * cube.getWidth()/2), (int)(i * cube.getWidth()), (int)(i * cube.getWidth()));
-                }
+                drawFireflies();
 
-                // Fireflies
-                int r = (int)(Math.random() * 10000 + WIDTH/2);
-                double theta = Math.random() * Math.PI * 2;
-                if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 3000, new ArrayList<GameObject>(fireflies))) {
-                    fireflies.add(new Firefly((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
-                }
+                drawWisps();
 
-                for (int i = fireflies.size() - 1; i >= 0; i--) {
-                    if (isInBeam(fireflies.get(i)) || drawAll) {
-                        fireflies.get(i).draw(cube.getX(), cube.getY(), g);
-                    }
-                    if (distance(cube.getX(), cube.getY(), fireflies.get(i).getX(), fireflies.get(i).getY()) > WIDTH) {
-                        fireflies.remove(i);
-                    }
-                }
+                drawVoid();
 
-                for (int i = fireflies.size() - 1; i >= 0; i--) {
-                    if (distance(cube.getX(), cube.getY(), fireflies.get(i).getX(), fireflies.get(i).getY()) < cube.getWidth() - fireflies.get(i).getWidth()) {
-                        fireflies.remove(i);
-                        cube.grow(1);
-                    }
-                }
-
-                // Wisps
-                r = (int)(Math.random() * 10000 + WIDTH/2);
-                theta = Math.random() * Math.PI * 2;
-                if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 3000, new ArrayList<GameObject>(wisps))) {
-                    wisps.add(new Wisp((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
-                }
-
-                for (int i = wisps.size() - 1; i >= 0; i--) {
-                    if (isInBeam(wisps.get(i))  || distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) < 5 * cube.getWidth() || drawAll) {
-                        wisps.get(i).draw(cube.getX(), cube.getY(), g);
-                    }
-                    if (distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) > WIDTH) {
-                        wisps.remove(i);
-                    }
-                }
-
-                for (int i = wisps.size() - 1; i >= 0; i--) {
-                    if (distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) < cube.getWidth() - wisps.get(i).getWidth()) {
-                        wisps.remove(i);
-                        cube.shrink(2);
-                    }
-                }
+                drawFlares();
 
                 g.setColor(Color.RED);
             }
@@ -147,13 +92,126 @@ public class GlowAnimation extends JPanel {
             else if(scene.equals("pause")) {
                 drawPause(g);
             }
-            else if(scene.equals("game over")) {
-            	drawGameOver(g);
-            }
             repaint();
         }
     }
 
+
+    // Breakdown methods
+    public void drawCharacter() {
+        // Cube glow
+        for (int i = 0; i < 10; i++) {
+            g.setColor(new Color(0, 255, 246, i));
+            g.fillOval((int)(WIDTH/2 - i * cube.getWidth()/2), (int)(HEIGHT/2 - i * cube.getWidth()/2), (int)(i * cube.getWidth()), (int)(i * cube.getWidth()));
+        }
+
+        // Beam
+        beam.setDirection(cube.getDirection());
+        beam.setWidth(cube.getWidth());
+        beam.draw(g);
+
+        // Cube
+        cube.drawCube(mouseX, mouseY, mouseDown, g);
+    } // Draws cube and beam
+
+    public void drawFireflies() {
+        int r = (int)(Math.random() * 10000 + WIDTH/2);
+        double theta = Math.random() * Math.PI * 2;
+        if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 3000, new ArrayList<GameObject>(fireflies))) {
+            fireflies.add(new Firefly((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
+        }
+
+        for (int i = fireflies.size() - 1; i >= 0; i--) {
+            if (isInBeam(fireflies.get(i)) || drawAll) {
+                fireflies.get(i).draw(cube.getX(), cube.getY(), g);
+            }
+            if (distance(cube.getX(), cube.getY(), fireflies.get(i).getX(), fireflies.get(i).getY()) > WIDTH) {
+                fireflies.remove(i);
+            }
+        }
+
+        for (int i = fireflies.size() - 1; i >= 0; i--) {
+            if (distance(cube.getX(), cube.getY(), fireflies.get(i).getX(), fireflies.get(i).getY()) < cube.getWidth() - fireflies.get(i).getWidth()) {
+                fireflies.remove(i);
+                cube.grow(1);
+            }
+        }
+    }
+
+    public void drawWisps() {
+        int r = (int)(Math.random() * 10000 + WIDTH/2);
+        double theta = Math.random() * Math.PI * 2;
+        if (hasSpaceAmongObjects(r * Math.cos(theta) + cube.getX(), r * Math.sin(theta) + cube.getY(), 3000, new ArrayList<GameObject>(wisps))) {
+            wisps.add(new Wisp((int)(r * Math.cos(theta) + cube.getX()), (int)(r * Math.sin(theta) + cube.getY()), 5, 5));
+        }
+
+        for (int i = wisps.size() - 1; i >= 0; i--) {
+            if (isInBeam(wisps.get(i))  || distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) < 5 * cube.getWidth() || drawAll) {
+                wisps.get(i).draw(cube.getX(), cube.getY(), g);
+            }
+            if (distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) > WIDTH) {
+                wisps.remove(i);
+            }
+        }
+
+        for (int i = wisps.size() - 1; i >= 0; i--) {
+            if (distance(cube.getX(), cube.getY(), wisps.get(i).getX(), wisps.get(i).getY()) < cube.getWidth() - wisps.get(i).getWidth()) {
+                wisps.remove(i);
+                cube.shrink(2);
+            }
+        }
+    }
+
+    public void drawFlares() {
+        for (int i = flares.size() - 1; i >= 0; i--) {
+            flares.get(i).drawFlare(cube.getX() - cube.getWidth()/2, cube.getY() - cube.getWidth()/2, cube.getWidth(), g);
+            if (distance(flares.get(i).getX(), flares.get(i).getY(), theVoid.getX(), theVoid.getY()) < flares.get(i).getWidth()/2 + theVoid.getWidth()/2) {
+                flares.remove(i);
+                cube.setFlareActive(false);
+            }
+        }
+    }
+
+    public void drawVoid() {
+        if (!cube.isFlareActive()) {
+            theVoid.drawVoid(cube.getX(), cube.getY(), 0, 0, false, cube.getSpeed(), g);
+        } else {
+            theVoid.drawVoid(cube.getX(), cube.getY(), flares.get(0).getX(), flares.get(0).getY(), true, cube.getSpeed(), g);
+        }
+    }
+
+    public static void drawMenu(Graphics g) {
+        background(g);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
+        g.drawString("GLOW", HEIGHT / 2 + 25, 400);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+        g.drawString("Press [p] to play", HEIGHT / 2 + 85, 600);
+    }
+
+    public static void drawIntro(Graphics g) {
+        background(g);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+        g.drawString("Controls:", 100, 200);
+        g.drawString("Left click to move", 100, 300);
+        g.drawString("The player will move in the direction", 100, 400);
+        g.drawString("of the cursor", 100, 500);
+        g.drawString("press [p] to pause", 100, 600);
+        g.drawString("press [c] to continue", 100, 700);
+    }
+
+    public static void drawPause(Graphics g) {
+        background(g);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
+        g.drawString("PAUSED", HEIGHT / 2 - 70, 400);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+        g.drawString("Press [p] to resume", HEIGHT / 2 + 55, 600);
+    }
+
+
+    // Helper methods
     public boolean hasSpaceAmongObjects(double x, double y, double radius, ArrayList<GameObject> objects) {
         for (GameObject object : objects) {
             if (distance(x, y, object.getX(), object.getY()) < radius) {
@@ -186,6 +244,18 @@ public class GlowAnimation extends JPanel {
         return Math.hypot(x2 - x1, y2 - y1);
     }
 
+//    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
+//        Color color = new Color(o.getColor().getRGB());
+//        int red = color.getRed();
+//        int green = color.getGreen();
+//        int blue = color.getBlue();
+//        for (int i = 1; i < levels + 1; i++) {
+//            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
+//            g.fillOval((int) (o.getX() - radius / levels * i), (int) (o.getY() - radius / levels * i), (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
+//        }
+//    }
+
+    // Listeners and stuff
     private class Mouse implements MouseListener, MouseMotionListener {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -194,7 +264,12 @@ public class GlowAnimation extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            mouseDown = true;
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                mouseDown = true;
+            } else if (e.getButton() == MouseEvent.BUTTON3 && !cube.isFlareActive()) {
+                flares.add(new Flare(cube.getX(), cube.getY()));
+                cube.setFlareActive(true);
+            }
         }
 
         @Override
@@ -260,12 +335,6 @@ public class GlowAnimation extends JPanel {
                     scene = "game";
                 }
             }
-             else if(scene.equals("game over")) {
-            	if(e.getKeyCode() == 80) {
-            		cube.setWidth(20);
-            		scene = "game";
-            	}
-            }
         }
 
         @Override
@@ -275,57 +344,6 @@ public class GlowAnimation extends JPanel {
         }
 
     }
-
-    public static void drawMenu(Graphics g) {
-        background(g);
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
-        g.drawString("GLOW", HEIGHT / 2 + 25, 400);
-        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-        g.drawString("Press [p] to play", HEIGHT / 2 + 85, 600);
-    }
-
-    public static void drawIntro(Graphics g) {
-        background(g);
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-        g.drawString("Controls:", 100, 200);
-        g.drawString("Left click to move", 100, 300);
-        g.drawString("The player will move in the direction", 100, 400);
-        g.drawString("of the cursor", 100, 500);
-        g.drawString("press [p] to pause", 100, 600);
-        g.drawString("press [c] to continue", 100, 700);
-    }
-
-    public static void drawPause(Graphics g) {
-        background(g);
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
-        g.drawString("PAUSED", HEIGHT / 2 - 70, 400);
-        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-        g.drawString("Press [p] to resume", HEIGHT / 2 + 55, 600);
-    }
-    public static void drawGameOver(Graphics g) {
-    	background(g);
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
-        g.drawString("GAME OVER", HEIGHT / 2 - 300, 200);
-        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
-        g.drawString("Score: " + (int) (cube.getWidth()), 100, 300);
-        g.drawString("High Score: ", 100, 400);
-        g.drawString("Press [p] to play again", 100, 500);
-    }
-
-//    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
-//        Color color = new Color(o.getColor().getRGB());
-//        int red = color.getRed();
-//        int green = color.getGreen();
-//        int blue = color.getBlue();
-//        for (int i = 1; i < levels + 1; i++) {
-//            g.setColor(new Color(red + (255 - red) / levels * i, green + (255 - green) / levels * i, blue + (255 - blue) / levels * i, intensity));
-//            g.fillOval((int) (o.getX() - radius / levels * i), (int) (o.getY() - radius / levels * i), (int) (o.getWidth() + (radius * 2 / levels * i)), (int) (o.getHeight() + (radius * 2 / levels * i)));
-//        }
-//    }
 
 
     public static void background(Graphics g) {
