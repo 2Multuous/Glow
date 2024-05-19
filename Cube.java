@@ -38,7 +38,7 @@ public class Cube extends GameObject {
 
         Rectangle rect = new Rectangle((int)(WIDTH/2 - getWidth()/2), (int)(HEIGHT/2 - getWidth()/2), (int)getWidth(), (int)getWidth());
 
-        g2d.rotate(Math.atan2(mouseY, mouseX) + Math.PI/2, (double)WIDTH/2, (double)HEIGHT/2);
+        g2d.rotate(-Math.atan2(mouseY, mouseX), (double)WIDTH/2, (double)HEIGHT/2);
 
         g2d.draw(rect);
         g2d.fill(rect);
@@ -46,49 +46,12 @@ public class Cube extends GameObject {
         g2d.setTransform(old);
     }
 
-    public double calculateAngleDegrees(double x, double y) {
-        if (x == 0 && y == 0) {
-            //center
-            return 0;
-        } else if (x == 0) {
-            if (y > 0) {
-                //up
-                return 90;
-            } else {
-                //down
-                return 270;
-            }
-        } else if (y == 0) {
-            if (x > 0) {
-                //right
-                return 0;
-            } else {
-                //left
-                return 180;
-            }
-        }
-
-        if (x < 0 && y < 0) {
-            //Quad III
-            return Math.toDegrees(Math.atan(Math.abs(y/x))) + 180;
-        } else if (y < 0) {
-            //Quad IIII
-            return (90 - Math.toDegrees(Math.atan(Math.abs(y/x)))) + 270;
-        } else if (x < 0) {
-            //Quad II
-            return (90 - Math.toDegrees(Math.atan(Math.abs(y/x)))) + 90;
-        } else {
-            //Quad I
-            return Math.toDegrees(Math.atan(Math.abs(y/x)));
-        }
-    }
-
     public void move(int mouseX, int mouseY, boolean mouseDown) {
-        setDirection(Math.atan2(mouseY, mouseX));
+        setDirection(-Math.atan2(mouseY, mouseX));
 
         if (mouseDown) {
             setX(getX() + Math.cos(getDirection()) * 10);
-            setY(getY() + Math.sin(getDirection()) * 10);
+            setY(super.getY() - Math.sin(getDirection()) * 10);
         }
     }
 
@@ -106,6 +69,11 @@ public class Cube extends GameObject {
 
     public void dropFlare() {
         numFlares--;
+    }
+
+    @Override
+    public double getY() {
+        return -super.getY();
     }
 
     // Dummy method
