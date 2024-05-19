@@ -68,6 +68,8 @@ public class GlowAnimation extends JPanel {
         input = new Input();
         setFocusable(true);
         this.addKeyListener(input);
+
+        HighScoreManager.createFile();
     }
 
     private class TimerListener implements ActionListener {
@@ -144,6 +146,9 @@ public class GlowAnimation extends JPanel {
             }
             else if(scene.equals("pause")) {
                 drawPause(g);
+            }
+            else if(scene.equals("game over")) {
+            	drawGameOver(g);
             }
             repaint();
         }
@@ -255,6 +260,12 @@ public class GlowAnimation extends JPanel {
                     scene = "game";
                 }
             }
+             else if(scene.equals("game over")) {
+            	if(e.getKeyCode() == 80) {
+            		cube.setWidth(20);
+            		scene = "game";
+            	}
+            }
         }
 
         @Override
@@ -293,6 +304,16 @@ public class GlowAnimation extends JPanel {
         g.drawString("PAUSED", HEIGHT / 2 - 70, 400);
         g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
         g.drawString("Press [p] to resume", HEIGHT / 2 + 55, 600);
+    }
+    public static void drawGameOver(Graphics g) {
+    	background(g);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 8));
+        g.drawString("GAME OVER", HEIGHT / 2 - 300, 200);
+        g.setFont(new Font("Comic Sans", Font.BOLD, WIDTH / 24));
+        g.drawString("Score: " + (int) (cube.getWidth()), 100, 300);
+        g.drawString("High Score: ", 100, 400);
+        g.drawString("Press [p] to play again", 100, 500);
     }
 
 //    public void glowEffect(GameObject o, int intensity, int levels, int radius) {
