@@ -14,7 +14,7 @@ public class Wisp extends Firefly{
 
 	public Wisp(double x, double y, double width, double height) {
 		super(x, y, width, height);
-		setThreshold(50);
+		setThreshold(200);
 		setSpeed(2);
 	}
 	
@@ -28,26 +28,28 @@ public class Wisp extends Firefly{
 	@Override
 	public void draw(double cubeX, double cubeY, Graphics g) {
 		move(cubeX, cubeY);
-
-		double percentage = calcDistance(cubeX, cubeY) / threshold;
-		setColor(new Color(255, (int) (255 * percentage), 0));
+		
+		if(calcDistance(cubeX, cubeY) > threshold) {
+			double percentage = Math.min(calcDistance(cubeX, cubeY) / threshold, 1);
+			setColor(new Color(255, (int) (255 * percentage), 0));
+		}
 		g.setColor(getColor());
-		g.fillRect((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH), (int) (getY()), (int) (getWidth() - cubeY - getHeight()/2 + GlowAnimation.HEIGHT), (int) (getHeight()));
+		g.fillRect((int)(getX() - cubeX - getWidth()/2 + GlowAnimation.WIDTH), (int) (getY() - cubeY - getHeight() / 2), (int) (getWidth()), (int) (getHeight()));
 	}
 	
 	public void move(double cubeX, double cubeY) {
-		if(calcDistance(cubeX, cubeY) <= threshold) {
+		if(calcDistance(cubeX, cubeY) >= threshold) {
 			if(cubeX > getX()) {
-				setX(getX() + speed / 2);
-			}
-			else if(cubeX < getX()) {
 				setX(getX() - speed / 2);
 			}
+			else if(cubeX < getX()) {
+				setX(getX() + speed / 2);
+			}
 			if(cubeY > getY()) {
-				setY(getY() + speed / 2);
+				setY(getY() - speed / 2);
 			}
 			else if(cubeY < getY()) {
-				setY(getY() - speed / 2);
+				setY(getY() + speed / 2);
 			}
 
 			// This can be shrunk with math
