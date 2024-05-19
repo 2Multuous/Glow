@@ -21,7 +21,6 @@ public class GlowAnimation extends JPanel {
     private ArrayList<FlareFly> flareflies;
     private ArrayList<Wisp> wisps;
     private ArrayList<Flare> flares;
-    private Firefly f;
     private Cube cube;
     private int mouseX;
     private int mouseY;
@@ -30,6 +29,9 @@ public class GlowAnimation extends JPanel {
     private Beam beam;
     private String scene;
     private Input input;
+
+    // For testing
+    private boolean drawAll;
 
     // Constructor required by BufferedImage
     public GlowAnimation() {
@@ -50,13 +52,11 @@ public class GlowAnimation extends JPanel {
         cube = new Cube(0, 0, 0.0, 20, new Color(5, 252, 248));
         beam = new Beam(cube.getDirection(), new Color(200, 255, 250, 60));
 
-        for (int i = 0; i < 100; i++) {
-            int r = (int)(Math.random() * WIDTH/2);
+        for (int i = 0; i < 500; i++) {
+            int r = (int)(Math.random() * 10000 + WIDTH/2);
             double theta = Math.random() * Math.PI * 2;
             fireflies.add(new Firefly((int)(r * Math.cos(theta)), (int)(r * Math.sin(theta)), 5, 5));
         }
-
-        f = new Firefly(200, 200, 5, 5);
 
         timer = new Timer(10, new TimerListener());
         timer.start();
@@ -81,17 +81,13 @@ public class GlowAnimation extends JPanel {
                 beam.draw(g);
                 cube.drawCube(mouseX, mouseY, mouseDown, g);
 
+                // TODO: add new fireflies in random pos around player if there's no others in 500 px radius
+                // TODO: remove fireflies when too far (~10000, 5000 px?)
                 for (Firefly firefly : fireflies) {
-                    //                if (isInBeam(object)) {
-                    //                    object.draw(cube.getX(), cube.getY(), g);
-                    ////                    glowEffect(object, 10, 4, 40);
-                    //                }
-                    if (isInBeam(firefly)) {
+                    if (isInBeam(firefly) || drawAll) {
                         firefly.draw(cube.getX(), cube.getY(), g);
                     }
                 }
-
-                f.draw(cube.getX(), cube.getY(), g);
 
                 g.setColor(Color.RED);
             }
@@ -117,8 +113,8 @@ public class GlowAnimation extends JPanel {
                 x = i + cube.getX();
                 y = slope * i + cube.getY();
             } else {
-                x = -(i + cube.getX());
-                y = -(slope * i + cube.getY());
+                x = -i + cube.getX();
+                y = -slope * i + cube.getY();
             }
             if (Math.hypot(object.getX() - x, object.getY() - y) < beam.getWidth()/2) {
                 return true;
